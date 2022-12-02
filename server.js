@@ -50,6 +50,7 @@ app.use((req, res, next) => {
 
 // Routes
 const routePublicAPI = require("./src/restAPI/routes/route_public");
+const routeUserAPI = require("./src/restAPI/routes/route_user");
 
 app.use("/api/v1/user", async (req, res, next) => {
     const result = true;
@@ -66,6 +67,8 @@ mongo_conn_native.connectToMongo().then(
 
         // public apis which does not need to authentication
         app.use("/api/v1/public", routePublicAPI);
+        // user api
+        app.use("/api/v1/user", routeUserAPI);
 
         /**
          *      Get port number from configuration file

@@ -1,0 +1,10 @@
+{
+  "connectionLimit": "20",
+  "port": "3016",
+  "debug": "true",
+  "timezone": "UTC+0",
+  "ssl": false,
+  "mongo_conn_str": "mongodb://localhost:27017/par",
+  "base_url": "http://localhost:3016",
+  "env": "development"
+}

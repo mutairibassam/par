@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const shopProfile = {
     _id: "xk4id0u3j4", // mandatory & auto-generated
     shopId: "1",

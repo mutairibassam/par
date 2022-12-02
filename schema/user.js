@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const userProfile = {
     _id: "xk4id0u3j4", // mandatory & auto-generated
     uuid: "93499849382929838", // mandatory & auto-generated

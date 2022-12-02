@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 const userProfile = {
     _id: "xk4id0u3j4", // mandatory & auto-generated
-    uuid: "93499849382929838", // mandatory & auto-generated
     first_name: "Bassam", // mandatory
     last_name: "mutairi", // optional
     bio: "Self-sufficient and reliable professional with 6 years of experience in software development. Successfully led various teams to build technological products, focusing on mobile and web applications.", // optional
@@ -24,6 +23,7 @@ const userPost = {
     username: "ref:username -> mutairibassam", // mandatory
     location: "ref:shopId -> 1", // mandatory
     interest: ["nodejs", "ci/cd", "python"], // mandatory
+    node: "Only about programming", // mandatory
     date: "19/03/2039", // mandatory
     from: "09:00 PM", // mandatory
     to: "10:00 PM", // mandatory

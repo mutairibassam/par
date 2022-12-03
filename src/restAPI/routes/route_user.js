@@ -12,6 +12,6 @@ router.put("/create", controller_appraisal_modules.createAPI);
 /**
  *      /update used to update a user profile
  */
-//router.post("/update", controller_appraisal_modules.updateAPI);
+router.post("/update", controller_appraisal_modules.updateAPI);
 
 module.exports = router;

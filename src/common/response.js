@@ -15,7 +15,12 @@ class Response {
         };
     }
 
-    static successful({ msg = "", code = 200, success = true, data = [] }) {
+    static successful({
+        msg = "success",
+        code = 200,
+        success = true,
+        data = [],
+    }) {
         return {
             result: {
                 message: msg,
@@ -28,7 +33,7 @@ class Response {
     static unknown() {
         return {
             result: {
-                message: "unknown error",
+                message: "unknown error!",
                 code: 500,
                 success: false,
             },

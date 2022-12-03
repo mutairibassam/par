@@ -51,6 +51,7 @@ app.use((req, res, next) => {
 // Routes
 const routePublicAPI = require("./src/restAPI/routes/route_public");
 const routeUserAPI = require("./src/restAPI/routes/route_user");
+const routePostAPI = require("./src/restAPI/routes/route_post");
 
 app.use("/api/v1/user", async (req, res, next) => {
     const result = true;
@@ -69,6 +70,8 @@ mongo_conn_native.connectToMongo().then(
         app.use("/api/v1/public", routePublicAPI);
         // user api
         app.use("/api/v1/user", routeUserAPI);
+        // timeline api
+        app.use("/api/v1/post", routePostAPI);
 
         /**
          *      Get port number from configuration file

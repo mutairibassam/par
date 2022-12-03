@@ -1,4 +1,5 @@
 const userProfile = require("../model/user/profile");
+const userPost = require("../model/user/post");
 const logger = require("../../logger").logger;
 
 const addUser = async (user) => {
@@ -58,4 +59,37 @@ const updateUser = async (user) => {
     }
 };
 
-module.exports = { addUser, updateUser };
+const addPost = async (post, ref) => {
+    // add user to databas
+    try {
+        const result = await userPost.create({
+            username: ref,
+            location: post.location,
+            interest: post.interest,
+            note: post.note,
+            date: post.date,
+            from: post.from,
+            to: post.to,
+            slots: post.slots,
+            occupied: post.occupied,
+            status: post.status,
+        });
+        return result;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+const getReference = async (user) => {
+    try {
+        const filter = { username: user.username };
+        const result = await userProfile.findOne(filter);
+        return result._id;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+module.exports = { addUser, updateUser, addPost, getReference };

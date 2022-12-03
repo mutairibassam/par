@@ -14,4 +14,9 @@ router.put("/create", controller_appraisal_modules.createAPI);
  */
 router.post("/update", controller_appraisal_modules.updateAPI);
 
+/**
+ *      /update used to post a new par
+ */
+router.post("/post", controller_appraisal_modules.postAPI);
+
 module.exports = router;

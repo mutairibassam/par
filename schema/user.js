@@ -23,7 +23,7 @@ const userPost = {
     username: "ref:username -> mutairibassam", // mandatory
     location: "ref:shopId -> 1", // mandatory
     interest: ["nodejs", "ci/cd", "python"], // mandatory
-    node: "Only about programming", // mandatory
+    note: "Only about programming", // mandatory
     date: "19/03/2039", // mandatory
     from: "09:00 PM", // mandatory
     to: "10:00 PM", // mandatory

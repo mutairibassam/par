@@ -93,3 +93,47 @@ exports.updateAPI = async (req, res) => {
         })
     );
 };
+
+/**
+ * @async
+ * @route   POST /api/v1/user/post
+ * @returns {Post}
+ * @author  Bassam
+ * @access  public
+ * @version 1.0
+ */
+
+exports.postAPI = async (req, res) => {
+    const data = req.body.data;
+    if (!data) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "You should add user data to create a new user.",
+            })
+        );
+    }
+    // get user id
+    const ref = await userDbInstance.getReference(data);
+    const result = await userDbInstance.addPost(data, ref);
+    if (result.code === 11000) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: result.message,
+            })
+        );
+    }
+    if (result.level === "error") {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: result.message,
+            })
+        );
+    }
+    return res.status(201).send(
+        Response.successful({
+            msg: result._message,
+            code: 201,
+            data: result,
+        })
+    );
+};

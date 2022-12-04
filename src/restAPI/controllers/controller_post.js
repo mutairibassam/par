@@ -18,7 +18,7 @@ const postDbInstance = require("./../../database/db_post");
 exports.timelineAPI = async (req, res) => {
     const result = await postDbInstance.getTimeline();
     if (!result) {
-        return res.status(200).send(Response.unknown({}));
+        return res.status(500).send(Response.unknown({}));
     }
     return res.status(200).send(Response.successful({ data: result }));
 };

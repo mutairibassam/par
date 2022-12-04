@@ -10,7 +10,7 @@
     "prepare": "husky install && npm run fixes",
     "lint": "npx eslint '**/*.js' --ignore-pattern node_modules/",
     "fixes": "npm run lint -- --fix",
-    "test": "jest",
+    "test": "jest --coverage",
     "local": "nodemon server.js",
     "start": "node server.js"
   },

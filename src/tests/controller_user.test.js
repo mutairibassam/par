@@ -40,21 +40,23 @@ describe("contain user apis", function () {
         });
     });
 
-    //describe("contain update api cases", () => {
-    //    it("a new user should be created successfully", async () => {
-    //        await request
-    //            .post("/update")
-    //            .send({ data })
-    //            .set("Accept", "application/json")
-    //            .expect(201);
-    //    });
+    describe("contain update api cases", () => {
+        it("should update existing user data successfully", async () => {
+            data.first_name = "my new name";
+            await request
+                .post("/update")
+                .send({ data })
+                .set("Accept", "application/json")
+                .expect(200);
+        });
 
-    //    it("should update a user successfully", async () => {
-    //        await request
-    //            .post("/update")
-    //            .send({ data })
-    //            .set("Accept", "application/json")
-    //            .expect(201);
-    //    });
-    //});
+        it("should fail since there is no user", async () => {
+            data.username = "notExist";
+            await request
+                .post("/update")
+                .send({ data })
+                .set("Accept", "application/json")
+                .expect(401);
+        });
+    });
 });

@@ -36,7 +36,7 @@ const userProfileSchema = new Schema({
     // required
     bio: {
         type: String,
-        maxlength: [50, "Bio should be less than 50 characters"],
+        maxlength: [150, "Bio should be less than 150 characters"],
         trim: true,
     },
     // required

@@ -89,4 +89,5 @@ mongo_conn_native.connectToMongo().then(
     }
 );
 
-exports.app = app;
+//exports.app = app;
+module.exports = app;

@@ -10,6 +10,7 @@
     "prepare": "husky install && npm run fixes",
     "lint": "npx eslint '**/*.js' --ignore-pattern node_modules/",
     "fixes": "npm run lint -- --fix",
+    "test": "jest",
     "local": "nodemon server.js",
     "start": "node server.js"
   },
@@ -36,7 +37,9 @@
     "dotenv": "^16.0.3",
     "eslint": "^8.28.0",
     "husky": "^8.0.2",
+    "jest": "^29.3.1",
     "nodemon": "^2.0.20",
+    "supertest": "^6.3.2",
     "winston": "^3.8.2",
     "winston-logrotate": "^1.3.0"
   }

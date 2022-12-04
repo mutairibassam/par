@@ -67,6 +67,7 @@ const addPost = async (post, ref) => {
             location: post.location,
             interest: post.interest,
             note: post.note,
+            // city: post.city, // to be added
             date: post.date,
             from: post.from,
             to: post.to,

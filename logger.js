@@ -1,34 +1,35 @@
-const winston = require("winston");
-const rotate = require("winston-logrotate").Rotate;
 const env = require("./config/default.json").env;
+const { createLogger, transports } = require("winston");
+const logform = require("logform");
+const { combine, timestamp, label, printf } = logform.format;
 
 module.exports.intialize = () => {
     if (env === "development" || env === "stage") {
-        module.exports.logger = winston.createLogger({
+        module.exports.logger = createLogger({
+            format: combine(
+                label({ label: `${env}` }),
+                timestamp(),
+                printf((nfo) => {
+                    return `${nfo.timestamp} [${nfo.label}] ${nfo.level}: ${nfo.message}`;
+                })
+            ),
             transports: [
-                new rotate({
-                    file: "./logs/development.log",
-                    colorize: true,
-                    timestamp: true,
-                    json: true,
-                    size: "2m",
-                    keep: 15,
-                    compress: true,
-                }),
+                new transports.Console(),
+                new transports.File({ filename: "./logs/development.log" }),
             ],
         });
     } else {
-        module.exports.logger = winston.createLogger({
+        module.exports.logger = createLogger({
+            format: combine(
+                label({ label: `${env}` }),
+                timestamp(),
+                printf((nfo) => {
+                    return `${nfo.timestamp} [${nfo.label}] ${nfo.level}: ${nfo.message}`;
+                })
+            ),
             transports: [
-                new rotate({
-                    file: "./logs/production.log",
-                    colorize: true,
-                    timestamp: true,
-                    json: true,
-                    size: "2m",
-                    keep: 15,
-                    compress: true,
-                }),
+                new transports.Console(),
+                new transports.File({ filename: "./logs/production.log" }),
             ],
         });
     }

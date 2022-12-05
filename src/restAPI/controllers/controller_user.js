@@ -158,17 +158,22 @@ exports.slotAPI = async (req, res) => {
     }
     // get user id who wants to pick a slot
     const consumer = await userDbInstance.getReference(data);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
     const result = await userDbInstance.updateSlot(data, consumer);
-    if (result.code === 11000) {
-        return res.status(401).send(
-            Response.unauthorized({
+    if (result.level === "error") {
+        return res.status(400).send(
+            Response.badRequest({
                 msg: result.message,
             })
         );
     }
-    if (result.level === "error") {
-        return res.status(401).send(
-            Response.unauthorized({
+    if (result.code === 11000) {
+        return res.status(400).send(
+            Response.badRequest({
                 msg: result.message,
             })
         );

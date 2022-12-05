@@ -14,7 +14,21 @@ class Response {
             },
         };
     }
-
+    static badRequest({
+        msg = "Bad Request.",
+        code = 400,
+        success = false,
+        data = [],
+    }) {
+        return {
+            result: {
+                message: msg,
+                code: code,
+                success: success,
+                data: data,
+            },
+        };
+    }
     static successful({
         msg = "success",
         code = 200,

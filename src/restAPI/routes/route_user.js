@@ -20,7 +20,7 @@ router.post("/update", controller_appraisal_modules.updateAPI);
 router.post("/post", controller_appraisal_modules.postAPI);
 
 /**
- *      /update used to post a new par
+ *      /update used to pick a newe slot
  */
 router.post("/slot", controller_appraisal_modules.slotAPI);
 

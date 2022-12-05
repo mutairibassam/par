@@ -19,4 +19,9 @@ router.post("/update", controller_appraisal_modules.updateAPI);
  */
 router.post("/post", controller_appraisal_modules.postAPI);
 
+/**
+ *      /update used to post a new par
+ */
+router.post("/slot", controller_appraisal_modules.slotAPI);
+
 module.exports = router;

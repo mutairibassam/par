@@ -137,3 +137,54 @@ exports.postAPI = async (req, res) => {
         })
     );
 };
+
+/**
+ * @async
+ * @route   POST /api/v1/user/slot
+ * @returns {Post}
+ * @author  Bassam
+ * @access  public
+ * @version 1.0
+ */
+
+exports.slotAPI = async (req, res) => {
+    const data = req.body.data;
+    if (!data) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "You should add user data to create a new user.",
+            })
+        );
+    }
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getReference(data);
+    const result = await userDbInstance.updateSlot(data, consumer);
+    if (result.code === 11000) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: result.message,
+            })
+        );
+    }
+    if (result.level === "error") {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: result.message,
+            })
+        );
+    }
+    if (result == -1) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "slots reach its maximum",
+            })
+        );
+    }
+    return res.status(201).send(
+        Response.successful({
+            msg: result._message,
+            code: 201,
+            data: result,
+        })
+    );
+};

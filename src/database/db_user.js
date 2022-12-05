@@ -82,6 +82,28 @@ const addPost = async (post, ref) => {
     }
 };
 
+const updateSlot = async (user) => {
+    try {
+        const filter = { _id: user.postId };
+        const post = await userPost.findOne(filter);
+        // get occupied
+        if (post !== undefined) {
+            // check occupied
+            if (post.occupied < post.slots) {
+                // update occupied
+                post.occupied++;
+                await post.save();
+            } else {
+                return -1;
+            }
+        }
+        return post;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
 const getReference = async (user) => {
     try {
         const filter = { username: user.username };
@@ -93,4 +115,4 @@ const getReference = async (user) => {
     }
 };
 
-module.exports = { addUser, updateUser, addPost, getReference };
+module.exports = { addUser, updateUser, addPost, updateSlot, getReference };

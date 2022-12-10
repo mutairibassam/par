@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const process = require("dotenv").config();
 
 /**
  *  database client
@@ -18,7 +20,7 @@ require("./logger").intialize();
 const logger = require("./logger").logger;
 
 /**
- *  Response
+ *  for Response
  */
 const Response = require("./src/common/response").Response;
 
@@ -52,14 +54,24 @@ app.use((req, res, next) => {
 const routePublicAPI = require("./src/restAPI/routes/route_public");
 const routeUserAPI = require("./src/restAPI/routes/route_user");
 const routePostAPI = require("./src/restAPI/routes/route_post");
+const routeAuthAPI = require("./src/restAPI/routes/route_auth");
 
-app.use("/api/v1/user", async (req, res, next) => {
-    const result = true;
-    if (!result) {
-        res.status(401).send(Response.unauthorized());
+async function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (token == null) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "Authorization header cannot be empty.",
+            })
+        );
     }
-    next();
-});
+    jwt.verify(token, process.parsed.ACCESS_TOKEN_SECRET, async (err, user) => {
+        if (err) return res.status(403).send(Response.forbidden({}));
+        req.user = user;
+        next();
+    });
+}
 
 // connect to database
 mongo_conn_native.connectToMongo().then(
@@ -69,9 +81,11 @@ mongo_conn_native.connectToMongo().then(
         // public apis which does not need to authentication
         app.use("/api/v1/public", routePublicAPI);
         // user api
-        app.use("/api/v1/user", routeUserAPI);
+        app.use("/api/v1/user", authenticateToken, routeUserAPI);
         // timeline api
-        app.use("/api/v1/post", routePostAPI);
+        app.use("/api/v1/post", authenticateToken, routePostAPI);
+        // auth api
+        app.use("/api/v1/auth", authenticateToken, routeAuthAPI);
 
         /**
          *      Get port number from configuration file

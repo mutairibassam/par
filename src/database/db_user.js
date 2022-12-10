@@ -1,8 +1,9 @@
 const userProfile = require("../model/user/profile");
 const userPost = require("../model/user/post");
+const userAuth = require("../model/auth/user");
 const logger = require("../../logger").logger;
 
-const addUser = async (user) => {
+const addProfile = async (user) => {
     // add user to databas
     try {
         const result = await userProfile.create({
@@ -26,9 +27,38 @@ const addUser = async (user) => {
     }
 };
 
-const updateUser = async (user) => {
+const addUser = async (user, password) => {
+    // add user to databas
     try {
-        const filter = { username: user.username };
+        const result = await userAuth.create({
+            userId: user._id,
+            password: password,
+        });
+        return result;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+const isValidated = async (consumer, password) => {
+    // add user to databas
+    try {
+        const filter = { userId: consumer._id };
+        // fetch the user and test password verification
+        const result = await userAuth.findOne(filter);
+        const [isValid, hash] = await result.comparePassword(password);
+        if (isValid) return { isValid, hash };
+        return { isValid, hash };
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+const updateUser = async (user, username) => {
+    try {
+        const filter = { username: username };
         // options is used to add a new document in case nothing match
         // const options = { upsert: true };
         const replacementDocument = {
@@ -86,8 +116,7 @@ const updateSlot = async (user) => {
     try {
         const filter = { _id: user.postId };
         const post = await userPost.findOne(filter);
-        // get occupied
-        if (post !== undefined) {
+        if (post !== null) {
             // check occupied
             if (post.occupied < post.slots) {
                 // update occupied
@@ -104,9 +133,9 @@ const updateSlot = async (user) => {
     }
 };
 
-const getReference = async (user) => {
+const getReference = async (username) => {
     try {
-        const filter = { username: user.username };
+        const filter = { username: username };
         const result = await userProfile.findOne(filter);
         return result._id;
     } catch (error) {
@@ -115,4 +144,24 @@ const getReference = async (user) => {
     }
 };
 
-module.exports = { addUser, updateUser, addPost, updateSlot, getReference };
+const getUser = async (username) => {
+    try {
+        const filter = { username: username };
+        const result = await userProfile.findOne(filter);
+        return result;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+module.exports = {
+    addProfile,
+    addUser,
+    updateUser,
+    addPost,
+    updateSlot,
+    getReference,
+    getUser,
+    isValidated,
+};

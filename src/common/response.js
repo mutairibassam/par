@@ -14,6 +14,21 @@ class Response {
             },
         };
     }
+    static forbidden({
+        msg = "Forbidden.",
+        code = 403,
+        success = false,
+        data = [],
+    }) {
+        return {
+            result: {
+                message: msg,
+                code: code,
+                success: success,
+                data: data,
+            },
+        };
+    }
     static badRequest({
         msg = "Bad Request.",
         code = 400,

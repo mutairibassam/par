@@ -19,4 +19,9 @@ router.post("/post", controller_appraisal_modules.postAPI);
  */
 router.post("/slot", controller_appraisal_modules.slotAPI);
 
+/**
+ *      /update used to pick a newe slot
+ */
+router.get("/profile", controller_appraisal_modules.profileAPI);
+
 module.exports = router;

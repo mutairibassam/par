@@ -5,6 +5,6 @@
   "timezone": "UTC+0",
   "ssl": false,
   "mongo_conn_str": "mongodb://localhost:27017/par",
-  "base_url": "http://localhost:3016",
+  "base_url": "http://localhost",
   "env": "development"
 }

@@ -1,7 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const process = require("dotenv").config();
+const env = require("dotenv").config();
+const process = require("process");
+
+const cluster = require("cluster");
+const cpus = require("os").cpus().length;
 
 /**
  *  database client
@@ -66,7 +70,7 @@ async function authenticateToken(req, res, next) {
             })
         );
     }
-    jwt.verify(token, process.parsed.ACCESS_TOKEN_SECRET, async (err, user) => {
+    jwt.verify(token, env.parsed.ACCESS_TOKEN_SECRET, async (err, user) => {
         if (err) return res.status(403).send(Response.forbidden({}));
         req.user = user;
         next();
@@ -94,9 +98,31 @@ mongo_conn_native.connectToMongo().then(
          *      in case there is no config file port 3016 will be in place
          */
         const port = config.port || 3016;
-        app.listen(port, async () => {
-            logger.info("Server is running " + port);
-        });
+        if (cluster.isMaster) {
+            for (let i = 0; i < cpus; i++) {
+                cluster.fork();
+            }
+            cluster.on("exit", (worker, code, signal) => {
+                if (signal) {
+                    logger.info(
+                        `worker ${worker.process.pid} was killed by signal: ${signal}`
+                    );
+                } else if (code !== 0) {
+                    logger.info(
+                        `worker ${worker.process.pid} exited with error code: ${code}`
+                    );
+                } else {
+                    logger.info(`worker ${worker.process.pid} just died.`);
+                }
+                cluster.fork();
+            });
+        } else {
+            app.listen(port, async () => {
+                logger.info(
+                    `Server ${process.pid} @ ${config.base_url}:${port}`
+                );
+            });
+        }
     },
     (err) => {
         logger.error("Unable to connect mongo " + err);

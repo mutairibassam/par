@@ -4,7 +4,9 @@ const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
 const process = require("process");
 
+// create new workers
 const cluster = require("cluster");
+// get cpus length
 const cpus = require("os").cpus().length;
 
 /**
@@ -18,7 +20,7 @@ const mongo_conn_native = require("./mongo_conn_native").Connection;
 const config = require("./config/default.json");
 
 /**
- *  for logging
+ *  for logging [https://www.npmjs.com/package/winston]
  */
 require("./logger").intialize();
 const logger = require("./logger").logger;
@@ -27,6 +29,11 @@ const logger = require("./logger").logger;
  *  for Response
  */
 const Response = require("./src/common/response").Response;
+
+/**
+ *  setting various HTTP headers [https://helmetjs.github.io/]
+ */
+const helmet = require("helmet");
 
 // Initialzie Express
 const app = express();
@@ -44,6 +51,8 @@ app.use(bodyParser.raw({ type: "application/octet-stream", limit: "1mb" }));
 
 // parse application/json
 app.use(bodyParser.json({ limit: "500mb", extended: true }));
+
+app.use(helmet());
 
 // For CORS
 app.use((req, res, next) => {

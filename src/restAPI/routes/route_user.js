@@ -10,18 +10,18 @@ const controller_appraisal_modules = require("../controllers/controller_user");
 router.post("/update", controller_appraisal_modules.updateAPI);
 
 /**
- *      /update used to post a new par
+ *      /post used to post a new par
  */
 router.post("/post", controller_appraisal_modules.postAPI);
 
 /**
- *      /update used to pick a newe slot
+ *      /slot used to pick a new slot
  */
 router.post("/slot", controller_appraisal_modules.slotAPI);
 
 /**
- *      /update used to pick a newe slot
+ *      /profile used to get user profile 
  */
-router.get("/profile", controller_appraisal_modules.profileAPI);
+router.get("/profile/:profile", controller_appraisal_modules.profileAPI);
 
 module.exports = router;

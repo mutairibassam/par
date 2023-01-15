@@ -172,10 +172,11 @@ exports.slotAPI = async (req, res) => {
  */
 
 exports.profileAPI = async (req, res) => {
-    const username = req.body.data.username;
+    const username = req.params.profile;
     // get user id who wants to pick a slot
     const consumer = await userDbInstance.getUser(username);
-    if (consumer.level == "error") {
+
+    if (consumer === null || consumer === undefined || consumer.level == "error") {
         return res
             .status(400)
             .send(Response.badRequest({ msg: "Username is not exist." }));
@@ -187,10 +188,10 @@ exports.profileAPI = async (req, res) => {
             })
         );
     }
-    return res.status(201).send(
+    return res.status(200).send(
         Response.successful({
             msg: consumer._message,
-            code: 201,
+            code: 200,
             data: consumer,
         })
     );

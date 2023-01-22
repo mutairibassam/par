@@ -24,4 +24,9 @@ router.post("/slot", controller_appraisal_modules.slotAPI);
  */
 router.get("/profile/:profile", controller_appraisal_modules.profileAPI);
 
+/**
+ *      /profile used to get user profile 
+ */
+router.get("/profile", controller_appraisal_modules.currentProfileAPI);
+
 module.exports = router;

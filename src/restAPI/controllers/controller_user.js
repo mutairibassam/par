@@ -196,3 +196,37 @@ exports.profileAPI = async (req, res) => {
         })
     );
 };
+/**
+ * @async
+ * @route   GET /api/v1/user/profile
+ * @returns {User}
+ * @author  Bassam
+ * @access  public
+ * @version 1.0
+ */
+
+exports.currentProfileAPI = async (req, res) => {
+    const username = req.user.username;
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getUser(username);
+
+    if (consumer === null || consumer === undefined || consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+    if (consumer.code === 11000) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: consumer.message,
+            })
+        );
+    }
+    return res.status(200).send(
+        Response.successful({
+            msg: consumer._message,
+            code: 200,
+            data: consumer,
+        })
+    );
+};

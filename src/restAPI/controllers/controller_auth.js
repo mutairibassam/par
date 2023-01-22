@@ -47,7 +47,7 @@ exports.logoutAPI = async (req, res) => {
  */
 
 exports.tokenAPI = async (req, res) => {
-    const data = req.body.data;
+    const username = req.user.username;
     const refreshToken = req.body.data.refreshToken;
     if (refreshToken == null) return res.sendStatus(401);
     //if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
@@ -55,20 +55,20 @@ exports.tokenAPI = async (req, res) => {
         refreshToken,
         process.parsed.REFRESH_TOKEN_SECRET,
         async (err, user) => {
-            if (err) return res.sendStatus(403);
-            const accessToken = generateAccessToken({ name: user.name });
+            if (err) return res.sendStatus(403);  
+            const accessToken = generateAccessToken({ name: user.username });
             const newRefreshToken = jwt.sign(
                 user,
                 process.parsed.REFRESH_TOKEN_SECRET
             );
             const result = await authDbInstance.updateTokens(
-                data,
+                username,
                 accessToken,
                 newRefreshToken
             );
             return res.status(200).send(
                 Response.successful({
-                    msg: result,
+                    data: result,
                 })
             );
         }

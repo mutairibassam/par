@@ -31,16 +31,11 @@ const removeTokens = async (token) => {
     }
 };
 
-const updateTokens = async (id, _accessToken, newRefreshToken) => {
+const updateTokens = async (_username, _accessToken, newRefreshToken) => {
     try {
-        const filter = { _id: id };
+        const filter = { username: _username };
         const profile = await userProfile.findOne(filter);
         const updateFilter = { userId: profile._id };
-        //const replacementDocument = {
-        //    userId: profile._id,
-        //    accessToken: _accessToken,
-        //    refreshToken: newRefreshToken,
-        //};
 
         const result = await auth.findOne(updateFilter);
         result.accessToken = _accessToken;

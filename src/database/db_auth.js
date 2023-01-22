@@ -31,9 +31,9 @@ const removeTokens = async (token) => {
     }
 };
 
-const updateTokens = async (_username, _accessToken, newRefreshToken) => {
+const updateTokens = async (id, _accessToken, newRefreshToken) => {
     try {
-        const filter = { username: _username };
+        const filter = { _id : id };
         const profile = await userProfile.findOne(filter);
         const updateFilter = { userId: profile._id };
 

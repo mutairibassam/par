@@ -179,7 +179,7 @@ exports.loginAPI = async (req, res) => {
     if (!username || !password) {
         return res.status(401).send(
             Response.unauthorized({
-                msg: "You should add user data sto create a new user.",
+                msg: "You should add user data to create a new user.",
             })
         );
     }
@@ -189,6 +189,7 @@ exports.loginAPI = async (req, res) => {
             .status(400)
             .send(Response.badRequest({ msg: "Username is not exist." }));
     }
+
     const { isValid, hash } = await userDbInstance.isValidated(
         consumer,
         password
@@ -206,6 +207,11 @@ exports.loginAPI = async (req, res) => {
         accessToken,
         refreshToken
     );
+    if (!result || result.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    } 
     return res.status(200).send(
         Response.successful({
             data: {

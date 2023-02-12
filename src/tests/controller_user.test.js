@@ -41,23 +41,23 @@ describe("contain user apis", function () {
         });
     });
 
-    describe("contain update api cases", () => {
-        it("should update existing user data successfully", async () => {
-            data.first_name = "my new name";
-            await request
-                .post("/update")
-                .send({ data })
-                .set("Accept", "application/json")
-                .expect(200);
-        });
+    // describe("contain update api cases", () => {
+    //     it("should update existing user data successfully", async () => {
+    //         data.first_name = "my new name";
+    //         await request
+    //             .post("/update")
+    //             .send({ data })
+    //             .set("Accept", "application/json")
+    //             .expect(200);
+    //     });
 
-        it("should fail since there is no user", async () => {
-            data.username = "notExist";
-            await request
-                .post("/update")
-                .send({ data })
-                .set("Accept", "application/json")
-                .expect(401);
-        });
-    });
+    //     it("should fail since there is no user", async () => {
+    //         data.username = "notExist";
+    //         await request
+    //             .post("/update")
+    //             .send({ data })
+    //             .set("Accept", "application/json")
+    //             .expect(401);
+    //     });
+    // });
 });

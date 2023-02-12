@@ -11,6 +11,10 @@ class Connection {
         this.db = mongo_client.db;
         return this.db;
     }
+
+    static async close() {
+        mongoose.connection.close(true);
+    }
 }
 
 Connection.client = null;

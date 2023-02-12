@@ -2,12 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
-const process = require("process");
+// const process = require("process");
 
 // create new workers
-const cluster = require("cluster");
+// const cluster = require("cluster");
 // get cpus length
-const cpus = require("os").cpus().length;
+// const cpus = require("os").cpus().length;
 
 /**
  *  database client
@@ -107,31 +107,36 @@ mongo_conn_native.connectToMongo().then(
          *      in case there is no config file port 3016 will be in place
          */
         const port = config.port || 3016;
-        if (cluster.isMaster) {
-            for (let i = 0; i < cpus; i++) {
-                cluster.fork();
-            }
-            cluster.on("exit", (worker, code, signal) => {
-                if (signal) {
-                    logger.info(
-                        `worker ${worker.process.pid} was killed by signal: ${signal}`
-                    );
-                } else if (code !== 0) {
-                    logger.info(
-                        `worker ${worker.process.pid} exited with error code: ${code}`
-                    );
-                } else {
-                    logger.info(`worker ${worker.process.pid} just died.`);
-                }
-                cluster.fork();
-            });
-        } else {
-            app.listen(port, async () => {
-                logger.info(
-                    `Server ${process.pid} @ ${config.base_url}:${port}`
-                );
-            });
-        }
+        app.listen(port, async () => {
+            logger.info(
+                `Server running ${config.base_url}:${port}`
+            );
+        });
+        // if (cluster.isMaster) {
+        //     for (let i = 0; i < 1; i++) {
+        //         cluster.fork();
+        //     }
+        //     cluster.on("exit", (worker, code, signal) => {
+        //         if (signal) {
+        //             logger.info(
+        //                 `worker ${worker.process.pid} was killed by signal: ${signal}`
+        //             );
+        //         } else if (code !== 0) {
+        //             logger.info(
+        //                 `worker ${worker.process.pid} exited with error code: ${code}`
+        //             );
+        //         } else {
+        //             logger.info(`worker ${worker.process.pid} just died.`);
+        //         }
+        //         cluster.fork();
+        //     });
+        // } else {
+        //     app.listen(port, async () => {
+        //         logger.info(
+        //             `Server ${process.pid} @ ${config.base_url}:${port}`
+        //         );
+        //     });
+        // }
     },
     (err) => {
         logger.error("Unable to connect mongo " + err);

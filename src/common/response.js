@@ -3,7 +3,7 @@ class Response {
         msg = "Unauthorized.",
         code = 401,
         success = false,
-        data = [],
+        data = null,
     }) {
         return {
             result: {
@@ -18,7 +18,7 @@ class Response {
         msg = "Forbidden.",
         code = 403,
         success = false,
-        data = [],
+        data = null,
     }) {
         return {
             result: {
@@ -33,7 +33,7 @@ class Response {
         msg = "Bad Request.",
         code = 400,
         success = false,
-        data = [],
+        data = null,
     }) {
         return {
             result: {
@@ -48,7 +48,7 @@ class Response {
         msg = "success",
         code = 200,
         success = true,
-        data = [],
+        data = null,
     }) {
         return {
             result: {
@@ -65,6 +65,7 @@ class Response {
                 message: "unknown error!",
                 code: 500,
                 success: false,
+                data: null,
             },
         };
     }

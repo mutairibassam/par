@@ -10,7 +10,7 @@ const authDbInstance = require("./../../database/db_auth");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const process = require("dotenv").config();
-var nodemailer = require("nodemailer");
+// var nodemailer = require("nodemailer");
 
 function generateAccessToken(user) {
     return jwt.sign(user, process.parsed.ACCESS_TOKEN_SECRET, {
@@ -27,38 +27,38 @@ function generatePassword() {
         .join("");
 }
 
-async function sendEmail(password) {
-    // Generate test SMTP service account from ethereal.email
-    // Only needed if you don't have a real mail account for testing
-    let testAccount = await nodemailer.createTestAccount();
+// async function sendEmail(password) {
+//     // Generate test SMTP service account from ethereal.email
+//     // Only needed if you don't have a real mail account for testing
+//     let testAccount = await nodemailer.createTestAccount();
 
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: testAccount.user, // generated ethereal user
-            pass: testAccount.pass, // generated ethereal password
-        },
-    });
+//     // create reusable transporter object using the default SMTP transport
+//     let transporter = nodemailer.createTransport({
+//         host: "smtp.ethereal.email",
+//         port: 587,
+//         secure: false, // true for 465, false for other ports
+//         auth: {
+//             user: testAccount.user, // generated ethereal user
+//             pass: testAccount.pass, // generated ethereal password
+//         },
+//     });
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
-        from: "Par Customer Care <Support@par.io", // sender address
-        to: "Bassam A. <mutairibassam@gmail.com>", // list of receivers
-        subject: "Your Par login code", // Subject line
-        text: password,
-        html: `<p>Please use below code to login:</p> </br><b>${password}</b>`, // html body
-    });
+    // let info = await transporter.sendMail({
+    //     from: "Par Customer Care <Support@par.io", // sender address
+    //     to: "Bassam A. <mutairibassam@gmail.com>", // list of receivers
+    //     subject: "Your Par login code", // Subject line
+    //     text: password,
+    //     html: `<p>Please use below code to login:</p> </br><b>${password}</b>`, // html body
+    // });
 
-    console.log("Message sent: %s", info.messageId);
+    // console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-}
+// }
 
 /**
  * @async
@@ -114,7 +114,7 @@ exports.createAPI = async (req, res) => {
     }
     // send password to users
     const passwd = generatePassword();
-    sendEmail(passwd);
+    console.log(passwd);
     const user = await userDbInstance.addUser(result, passwd);
     if (user.code === 11000) {
         return res.status(401).send(

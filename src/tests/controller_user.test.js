@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+const mongo = require("../../mongo_conn_native").Connection;
+
 const supertest = require("supertest");
 const app = require("../../server");
 const userRouter = require("../restAPI/routes/route_user");
@@ -7,6 +9,16 @@ supertest(app.use(userRouter));
 supertest(app.use(publicRouter));
 
 describe("contain user apis", function () {
+
+    // beforeAll(async () => {
+
+    // }, 10000);
+
+    afterAll(async () => {
+        mongo.close();
+    });
+
+
     const data = {
         first_name: "test", // mandatory
         last_name: "test", // optional
@@ -22,6 +34,7 @@ describe("contain user apis", function () {
             portfolio: "https://...",
         },
     };
+
     describe("contain create api cases", () => {
         it("a new user should be created successfully", async () => {
             await supertest(app)

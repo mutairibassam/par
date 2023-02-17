@@ -147,9 +147,16 @@ exports.slotAPI = async (req, res) => {
         );
     }
     if (result == -1) {
-        return res.status(401).send(
+        return res.status(403).send(
             Response.unauthorized({
-                msg: "slots reach its maximum",
+                msg: "Slot id does not exist.",
+            })
+        );
+    }
+    if (result == -2) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slots reach its maximum.",
             })
         );
     }

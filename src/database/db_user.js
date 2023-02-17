@@ -1,5 +1,6 @@
 const userProfile = require("../model/user/profile");
-const userPost = require("../model/user/post");
+const userPost = require("../model/user/post").userPost;
+const pickSlot = require("../model/user/post").pickSlot;
 const userAuth = require("../model/auth/user");
 const logger = require("../../logger").logger;
 
@@ -112,21 +113,31 @@ const addPost = async (post, ref) => {
     }
 };
 
-const updateSlot = async (user) => {
+const updateSlot = async (user, consumer) => {
     try {
-        const filter = { _id: user.postId };
-        const post = await userPost.findOne(filter);
-        if (post !== null) {
-            // check occupied
-            if (post.occupied < post.slots) {
-                // update occupied
-                post.occupied++;
-                await post.save();
-            } else {
-                return -1;
-            }
+        const postId = {postId: user.postId};
+        const pick = await pickSlot.findOne(postId).populate("owner").populate("postId").populate("attendees");
+
+        if (pick === null) {
+            /// post id does not exist
+            return -1;
         }
-        return post;
+        if(pick.postId.occupied >= pick.postId.slots){
+            /// slots has reached its maximum
+            return -2;
+        }
+        /// increment slots with 1
+        pick.postId.occupied = pick.postId.occupied + 1;
+        
+        /// add new attendees
+        pick.attendees = [...pick.attendees, consumer._id];
+
+        ///! need to save the changes if both pass, for example;
+        /// (await pick.save() && await pick.postId.save())
+        await pick.save();
+        await pick.postId.save();
+
+        return pick;
     } catch (error) {
         logger.error(error);
         return error;
@@ -137,7 +148,7 @@ const getReference = async (username) => {
     try {
         const filter = { username: username };
         const result = await userProfile.findOne(filter);
-        return result._id;
+        return result;
     } catch (error) {
         logger.error(error);
         return error;

@@ -1,6 +1,25 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
+const pickSlotSchema = new Schema({
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "userProfile",
+        required: true
+    },
+    postId: {
+        type: Schema.Types.ObjectId,
+        ref: "userpost",
+        required: true,
+    },
+    attendees: {
+        type: [Schema.Types.ObjectId],
+        ref: "userProfile",
+        required: false,
+        default: []
+    }
+});
+
 const postSchema = new Schema({
     // required - ref to user profile
     username: {
@@ -32,28 +51,31 @@ const postSchema = new Schema({
     },
     // required
     from: {
+        ///! should be timestamp
         type: String,
         required: true,
     },
     // required
     to: {
+        ///! should be timestamp
         type: String,
         required: true,
     },
     // required
     slots: {
-        type: String,
+        type: Number,
+        default: 3,
         required: true,
     },
     // required
     occupied: {
-        type: String,
+        type: Number,
         required: true,
-        default: "0",
+        default: 0,
     },
     status: {
         type: String,
-        default: "1", // [1 open, 2 deleted, 3 expired]
+        default: "1", // [1 open, 2 expired, 3 full]
     },
     // auto-generated from backend
     createdAt: {
@@ -72,5 +94,15 @@ postSchema.pre("save", function (next) {
     next();
 });
 
+postSchema.post("save", function (doc) {
+    pickSlot.create({
+        owner: doc.username,
+        postId: doc._id,
+    });
+});
+
+
+
 const userPost = model("userpost", postSchema);
-module.exports = userPost;
+const pickSlot = model("pickslot", pickSlotSchema);
+module.exports = { userPost, pickSlot};

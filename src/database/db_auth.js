@@ -59,4 +59,18 @@ const getToken = async (id) => {
     }
 };
 
-module.exports = { addTokens, removeTokens, updateTokens, getToken };
+const getTokenByUsername = async (_username) => {
+    try {
+        const profile = await auth.find({}).populate("userId");
+        const query2 = profile.filter((x) => { if(x.userId.username === _username) return x.accessToken});
+        if(query2[0].accessToken !== null) {
+            return query2[0].accessToken
+        }
+        return false;
+    } catch (error) {
+        // logger.error(error);
+        return error;
+    }
+};
+
+module.exports = { addTokens, removeTokens, updateTokens, getToken, getTokenByUsername };

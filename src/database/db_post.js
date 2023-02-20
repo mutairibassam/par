@@ -1,5 +1,5 @@
 const userProfile = require("../model/user/profile");
-const post = require("../model/user/post");
+const userPost = require("../model/user/post").userPost
 const logger = require("../../logger").logger;
 
 const getReference = async (user) => {
@@ -15,7 +15,8 @@ const getReference = async (user) => {
 
 const getTimeline = async () => {
     try {
-        const result = await post.find({}).populate("username").sort({"createdAt": "desc"});
+        const result = await userPost.find({}).populate("username").sort({"createdAt": "desc"});
+        console.log(result);
         return result;
     } catch (error) {
         logger.error(error);

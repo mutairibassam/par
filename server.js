@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const env = require("dotenv").config();
-const getTokenByUsername = require("./src/database/db_auth").getTokenByUsername
+const getTokenByUsername = require("./src/database/db_auth").getTokenByUsername;
 // const process = require("process");
 
 // create new workers
@@ -87,14 +87,12 @@ async function authenticateToken(req, res, next) {
         const dbToken = await getTokenByUsername(user.username);
         /// if it's match next()
         if(token === dbToken) {
-            /// if it's not match forbid
+            /// if it's not match deny
             req.user = user;
             return next();
         }
-        return res.status(401).send(
-            Response.unauthorized({
-                msg: "Token is not valid.",
-            })
+        return res.status(403).send(
+            Response.forbidden({})
         ); 
     });
 }

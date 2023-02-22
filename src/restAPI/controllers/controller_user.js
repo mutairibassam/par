@@ -169,6 +169,223 @@ exports.slotAPI = async (req, res) => {
     );
 };
 
+exports.getAllRequestsAPI = async (req, res) => {
+    const username = req.user.username;
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+
+    const result = await userDbInstance.getAllRequests(consumer);
+
+    if (result.level === "error" || result.code === 11000 || result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    
+    return res.status(200).send(
+        Response.successful({
+            msg: result._message,
+            code: 200,
+            data: result,
+        })
+    );
+};
+
+exports.requestNewSlot = async (req, res) => {
+    /// need post id
+    const data = req.body.data;
+    const username = req.user.username;
+    if (!data) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "You should add post Id.",
+            })
+        );
+    }
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+
+    const result = await userDbInstance.requestNewSlot(data, consumer);
+    if (result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: "Invalid post id.",
+            })
+        );
+    }
+    if (result.level === "error") {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result.code === 11000) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result == -1) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slot id does not exist.",
+            })
+        );
+    }
+    if (result == -2) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slots reach its maximum.",
+            })
+        );
+    }
+    return res.status(201).send(
+        Response.successful({
+            msg: result._message,
+            code: 201,
+            data: result,
+        })
+    );
+};
+
+exports.approveSlot = async (req, res) => {
+    const data = req.body.data;
+    const username = req.user.username;
+    if (!data) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "You should add post Id.",
+            })
+        );
+    }
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+    const result = await userDbInstance.approveSlot(data, consumer);
+    if (result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: "Invalid post id.",
+            })
+        );
+    }
+    if (result.level === "error") {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result.code === 11000) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result == -1) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slot id does not exist.",
+            })
+        );
+    }
+    if (result == -2) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slots reach its maximum.",
+            })
+        );
+    }
+    return res.status(201).send(
+        Response.successful({
+            msg: result._message,
+            code: 201,
+            data: result,
+        })
+    );
+};
+
+exports.rejectSlot = async (req, res) => {
+    const data = req.body.data;
+    // const username = req.user.username;
+    if (!data) {
+        return res.status(401).send(
+            Response.unauthorized({
+                msg: "You should add post Id.",
+            })
+        );
+    }
+    // // get user id who wants to pick a slot
+    // const consumer = await userDbInstance.getReference(username);
+    // if (consumer.level == "error") {
+    //     return res
+    //         .status(400)
+    //         .send(Response.badRequest({ msg: "Username is not exist." }));
+    // }
+    const result = await userDbInstance.rejectSlot(data);
+    if (result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: "Invalid post id.",
+            })
+        );
+    }
+    if (result.level === "error") {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result.code === 11000) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    if (result == -1) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slot id does not exist.",
+            })
+        );
+    }
+    if (result == -2) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slots reach its maximum.",
+            })
+        );
+    }
+    return res.status(201).send(
+        Response.successful({
+            msg: result._message,
+            code: 201,
+            data: result,
+        })
+    );
+};
+
 /**
  * @async
  * @route   GET /api/v1/user/profile

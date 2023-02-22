@@ -20,6 +20,26 @@ router.post("/post", controller_appraisal_modules.postAPI);
 router.post("/slot", controller_appraisal_modules.slotAPI);
 
 /**
+ *      /request used to pick a new slot
+ */
+router.get("/requests", controller_appraisal_modules.getAllRequestsAPI);
+
+/**
+ *      /request used to pick a new slot
+ */
+router.post("/request", controller_appraisal_modules.requestNewSlot);
+
+/**
+ *      /approve used to pick a new slot
+ */
+router.post("/approve", controller_appraisal_modules.approveSlot);
+
+/**
+ *      /reject used to pick a new slot
+ */
+router.post("/reject", controller_appraisal_modules.rejectSlot);
+
+/**
  *      /profile used to get user profile 
  */
 router.get("/profile/:profile", controller_appraisal_modules.profileAPI);

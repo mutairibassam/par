@@ -1,6 +1,7 @@
 const userProfile = require("../model/user/profile");
 const userPost = require("../model/user/post").userPost;
 const pickSlot = require("../model/user/post").pickSlot;
+// const requestSlot = require("../model/user/post").requestSlot;
 const userAuth = require("../model/auth/user");
 const logger = require("../../logger").logger;
 
@@ -113,31 +114,99 @@ const addPost = async (post, ref) => {
     }
 };
 
-const updateSlot = async (user, consumer) => {
+const getAllRequests = async (consumer) => {
     try {
-        const postId = {postId: user.postId};
-        const pick = await pickSlot.findOne(postId).populate("owner").populate("postId").populate("attendees");
+        const filter = { owner : consumer._id };
+        const requests = await pickSlot.find(filter).populate("owner").populate("postId").populate("attendees.requester");
+        return requests;   
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
 
-        if (pick === null) {
+const requestNewSlot = async (data, consumer) => {
+
+    try {
+        /// should return a default status 0
+        /// post id, consumer id
+        const postId = { postId: data.postId };
+        const requestPost = await pickSlot.findOne(postId);
+
+        if (requestPost === null) {
             /// post id does not exist
             return -1;
         }
-        if(pick.postId.occupied >= pick.postId.slots){
+
+        requestPost.attendees.requester = consumer._id;
+        requestPost.attendees.requesterStatus = "3";
+
+        await requestPost.save();
+        return requestPost;
+    } catch (error) {
+        logger.error("request new slot " + error);
+        return error; 
+    }
+
+};
+
+const rejectSlot = async (user) => {
+    /// should expect a postId
+    try {
+        // const postId = {postId: user.postId};
+        const requesterId = {_id: user.requesterId};
+        const post = await pickSlot.findOne(requesterId).populate("postId");
+
+        if (post === null) {
+            /// post id does not exist
+            return -1;
+        }
+        post.requestStatus = "2";
+
+        await post.save();
+
+        return post;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+const approveSlot = async (user, consumer) => {
+    /// should expect a postId and consumer id
+    console.log(consumer);
+    try {
+        // const postId = {postId: user.postId};
+        // const pick = await pickSlot.findOne(postId).populate("owner").populate("postId").populate("attendees");
+
+        const requesterId = {_id: user.requesterId};
+        const post = await pickSlot.findOne(requesterId).populate("postId");
+
+        if (post === null) {
+            /// post id does not exist
+            return -1;
+        }
+
+        if(post.postId.occupied >= post.postId.slots){
             /// slots has reached its maximum
             return -2;
         }
         /// increment slots with 1
-        pick.postId.occupied = pick.postId.occupied + 1;
+        post.postId.occupied = post.postId.occupied + 1;
+        if(post.postId.occupied >= post.postId.slots){
+            /// slots has been reached its maximum
+            post.status = "3";
+        }
         
         /// add new attendees
-        pick.attendees = [...pick.attendees, consumer._id];
+        post.attendees = [...post.attendees, consumer._id];
 
         ///! need to save the changes if both pass, for example;
         /// (await pick.save() && await pick.postId.save())
-        await pick.save();
-        await pick.postId.save();
+        await post.save();
+        await post.postId.save();
 
-        return pick;
+        return post;
     } catch (error) {
         logger.error(error);
         return error;
@@ -171,8 +240,11 @@ module.exports = {
     addUser,
     updateUser,
     addPost,
-    updateSlot,
+    approveSlot,
     getReference,
     getUser,
     isValidated,
+    rejectSlot,
+    requestNewSlot,
+    getAllRequests
 };

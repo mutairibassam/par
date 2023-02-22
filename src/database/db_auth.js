@@ -59,12 +59,13 @@ const getToken = async (id) => {
     }
 };
 
+/// need to be optimized using native `where()`
 const getTokenByUsername = async (_username) => {
     try {
         const profile = await auth.find({}).populate("userId");
-        const query2 = profile.filter((x) => { if(x.userId.username === _username) return x.accessToken});
+        const query2 = profile.filter((x) => { if(x.userId.username === _username) return x.accessToken;});
         if(query2[0].accessToken !== null) {
-            return query2[0].accessToken
+            return query2[0].accessToken;
         }
         return false;
     } catch (error) {

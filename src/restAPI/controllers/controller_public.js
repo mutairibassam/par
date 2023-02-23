@@ -130,7 +130,7 @@ exports.createAPI = async (req, res) => {
             })
         );
     }
-    const filter = { username: result.username, password: user.password };
+    const filter = { username: result.username };
     const accessToken = generateAccessToken(filter);
     const refreshToken = jwt.sign(filter, process.parsed.REFRESH_TOKEN_SECRET);
     const tokens = await authDbInstance.addTokens(
@@ -190,7 +190,7 @@ exports.loginAPI = async (req, res) => {
             .send(Response.badRequest({ msg: "Username is not exist." }));
     }
 
-    const { isValid, hash } = await userDbInstance.isValidated(
+    const isValid = await userDbInstance.isValidated(
         consumer,
         password
     );
@@ -199,7 +199,7 @@ exports.loginAPI = async (req, res) => {
             .status(400)
             .send(Response.unauthorized({ msg: "Password is incorrect." }));
     }
-    const user = { username: consumer.username, password: hash };
+    const user = { username: consumer.username };
     const accessToken = generateAccessToken(user);
     const refreshToken = jwt.sign(user, process.parsed.REFRESH_TOKEN_SECRET);
     const result = await authDbInstance.updateTokens(

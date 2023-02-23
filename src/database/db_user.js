@@ -49,9 +49,8 @@ const isValidated = async (consumer, password) => {
         const filter = { userId: consumer._id };
         // fetch the user and test password verification
         const result = await userAuth.findOne(filter);
-        const [isValid, hash] = await result.comparePassword(password);
-        if (isValid) return { isValid, hash };
-        return { isValid, hash };
+        const isValid = await result.comparePassword(password);
+        return isValid
     } catch (error) {
         logger.error(error);
         return error;

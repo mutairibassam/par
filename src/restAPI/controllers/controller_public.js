@@ -207,11 +207,25 @@ exports.loginAPI = async (req, res) => {
         accessToken,
         refreshToken
     );
-    if (!result || result.level == "error") {
+    if (result.level == "error") {
         return res
             .status(400)
             .send(Response.badRequest({ msg: "Username is not exist." }));
-    } 
+    }
+    if(!result) {
+        const tokens = await authDbInstance.addTokens(
+            consumer,
+            accessToken,
+            refreshToken
+        );
+        return res.status(200).send(
+            Response.successful({
+                data: {
+                    user: tokens,
+                },
+            })
+        );
+    }
     return res.status(200).send(
         Response.successful({
             data: {

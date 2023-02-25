@@ -38,9 +38,13 @@ const updateTokens = async (id, _accessToken, newRefreshToken) => {
         const updateFilter = { userId: profile._id };
 
         const result = await auth.findOne(updateFilter);
-        result.accessToken = _accessToken;
-        result.refreshToken = newRefreshToken;
-        result.save();
+        if(result !== null) {
+            result.accessToken = _accessToken;
+            result.refreshToken = newRefreshToken;
+            result.save();
+        } else {
+            return false
+        }
         return result;
     } catch (error) {
         logger.error(error);

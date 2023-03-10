@@ -20,7 +20,7 @@ router.post("/post", controller_appraisal_modules.postAPI);
 router.post("/slot", controller_appraisal_modules.slotAPI);
 
 /**
- *      /request used to pick a new slot
+ *      /request used to fetch all requests for a specific user
  */
 router.get("/requests", controller_appraisal_modules.getAllRequestsAPI);
 

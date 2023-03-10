@@ -160,10 +160,10 @@ exports.slotAPI = async (req, res) => {
             })
         );
     }
-    return res.status(201).send(
+    return res.status(200).send(
         Response.successful({
             msg: result._message,
-            code: 201,
+            code: 200,
             data: result,
         })
     );
@@ -268,7 +268,7 @@ exports.approveSlot = async (req, res) => {
     if (!data) {
         return res.status(401).send(
             Response.unauthorized({
-                msg: "You should add post Id.",
+                msg: "You should add post id.",
             })
         );
     }
@@ -301,24 +301,31 @@ exports.approveSlot = async (req, res) => {
             })
         );
     }
-    if (result == -1) {
+    if (result === -1) {
         return res.status(403).send(
             Response.unauthorized({
                 msg: "Slot id does not exist.",
             })
         );
     }
-    if (result == -2) {
+    if(result === -3) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "You are not authorized to approve.",
+            })
+        );
+    }
+    if (result === -2) {
         return res.status(403).send(
             Response.unauthorized({
                 msg: "Slots reach its maximum.",
             })
         );
     }
-    return res.status(201).send(
+    return res.status(200).send(
         Response.successful({
             msg: result._message,
-            code: 201,
+            code: 200,
             data: result,
         })
     );
@@ -326,22 +333,22 @@ exports.approveSlot = async (req, res) => {
 
 exports.rejectSlot = async (req, res) => {
     const data = req.body.data;
-    // const username = req.user.username;
+    const username = req.user.username;
     if (!data) {
         return res.status(401).send(
             Response.unauthorized({
-                msg: "You should add post Id.",
+                msg: "You should add post id.",
             })
         );
     }
-    // // get user id who wants to pick a slot
-    // const consumer = await userDbInstance.getReference(username);
-    // if (consumer.level == "error") {
-    //     return res
-    //         .status(400)
-    //         .send(Response.badRequest({ msg: "Username is not exist." }));
-    // }
-    const result = await userDbInstance.rejectSlot(data);
+    // get user id who wants to pick a slot
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+    const result = await userDbInstance.rejectSlot(data, consumer);
     if (result === null) {
         return res.status(400).send(
             Response.badRequest({
@@ -363,24 +370,24 @@ exports.rejectSlot = async (req, res) => {
             })
         );
     }
-    if (result == -1) {
+    if (result === -1) {
         return res.status(403).send(
             Response.unauthorized({
                 msg: "Slot id does not exist.",
             })
         );
     }
-    if (result == -2) {
+    if(result === -3) {
         return res.status(403).send(
             Response.unauthorized({
-                msg: "Slots reach its maximum.",
+                msg: "You are not authorized to reject.",
             })
         );
     }
-    return res.status(201).send(
+    return res.status(200).send(
         Response.successful({
             msg: result._message,
-            code: 201,
+            code: 200,
             data: result,
         })
     );

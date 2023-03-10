@@ -1,15 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const attendeesSchema = new Schema({
-    requester: {
-        type: Schema.Types.ObjectId,
-        ref: "userProfile"
-    },
-    requesterStatus: String,
-});
-
-const pickSlotSchema = new Schema({
+const slotSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: "userProfile",
@@ -22,13 +14,13 @@ const pickSlotSchema = new Schema({
         required: true,
         immutable: true,
     },
-    attendees: {
-        type: attendeesSchema,
-        default: {
-            // requester: "a",
-            requestStatus: "0"
-        }
-    },
+    attendees: [{
+        requester: {
+            type: Schema.Types.ObjectId,
+            ref: "userProfile"
+        },
+        requestStatus: String,
+    }],
     // auto-generated from backend
     createdAt: {
         type: Date,
@@ -115,14 +107,13 @@ postSchema.pre("save", function (next) {
 });
 
 postSchema.post("save", function (doc) {
-    pickSlot.create({
+    slot.create({
         owner: doc.username,
         postId: doc._id,
     });
 });
 
 const userPost = model("userpost", postSchema);
-const pickSlot = model("pickslot", pickSlotSchema);
-const attendees = model("attendee", attendeesSchema);
+const slot = model("slot", slotSchema);
 
-module.exports = { userPost , pickSlot, attendees };
+module.exports = { userPost , slot};

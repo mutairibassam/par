@@ -1,0 +1,5 @@
+{
+  "name": "par",
+  "script": "./server.js",
+  "instances": "1"
+}

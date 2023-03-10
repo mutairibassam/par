@@ -49,7 +49,7 @@ const isValidated = async (consumer, password) => {
         // fetch the user and test password verification
         const result = await userAuth.findOne(filter);
         const isValid = await result.comparePassword(password);
-        return isValid
+        return isValid;
     } catch (error) {
         logger.error(error);
         return error;
@@ -126,7 +126,7 @@ const getAllRequests = async (consumer) => {
 const requestNewSlot = async (data, consumer) => {
 
     try {
-        const filter = {postId:  data.postId}
+        const filter = {postId:  data.postId};
 
         const newRequester = {
             $push: {
@@ -135,7 +135,7 @@ const requestNewSlot = async (data, consumer) => {
                     "requestStatus": "3"
                 }
             }
-        }
+        };
 
         /// TODO reject if user requesting for himself
         const result = await slot.updateOne(
@@ -145,7 +145,7 @@ const requestNewSlot = async (data, consumer) => {
         return result;
     } catch (error) {
         logger.error("request new slot " + error);
-        if(error['name'] === "CastError") return -1
+        if(error["name"] === "CastError") return -1;
         return error; 
     }
 
@@ -158,7 +158,7 @@ const rejectSlot = async (data, consumer) => {
     const ownerValue = consumer._id;
     const postValue = data.postId;
     const requesterValue = data.requesterId;
-    const post = await slot.findOne({}).where('postId').equals(postValue).populate("postId").exec();
+    const post = await slot.findOne({}).where("postId").equals(postValue).populate("postId").exec();
     
     if (post === null) {
         /// post id does not exist
@@ -172,9 +172,9 @@ const rejectSlot = async (data, consumer) => {
     post.attendees.map((obj) => {
         /// iterate over attendees list to update the status of the requester
         if(obj.requester.toString() === requesterValue) {
-            obj.requestStatus = "2"
+            obj.requestStatus = "2";
         }
-    })
+    });
 
     ///! need to save the changes if both pass, for example;
     /// (await pick.save() && await pick.postId.save())
@@ -195,7 +195,7 @@ const approveSlot = async (data, consumer) => {
         const ownerValue = consumer._id;
         const postValue = data.postId;
         const requesterValue = data.requesterId;
-        const post = await slot.findOne({}).where('postId').equals(postValue).populate("postId").exec();
+        const post = await slot.findOne({}).where("postId").equals(postValue).populate("postId").exec();
         
         if (post === null) {
             /// post id does not exist
@@ -218,9 +218,9 @@ const approveSlot = async (data, consumer) => {
         /// change requester status to approve
         post.attendees.map((obj) => {
             if(obj.requester.toString() === requesterValue) {
-                obj.requestStatus = "1"
+                obj.requestStatus = "1";
             }
-        })
+        });
 
         ///! need to save the changes if both pass, for example;
         /// (await pick.save() && await pick.postId.save())

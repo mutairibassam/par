@@ -43,7 +43,7 @@ const updateTokens = async (id, _accessToken, newRefreshToken) => {
             result.refreshToken = newRefreshToken;
             result.save();
         } else {
-            return false
+            return false;
         }
         return result;
     } catch (error) {

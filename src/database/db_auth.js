@@ -13,7 +13,7 @@ const addTokens = async (user, _accessToken, _refreshToken) => {
             refreshToken: _refreshToken,
         };
         //const result = await auth.findOneAndUpdate(filter, data);
-        const result = await auth.insertMany(data);
+        const result = await auth.create(data);
         return result;
     } catch (error) {
         logger.error(error);

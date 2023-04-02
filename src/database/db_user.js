@@ -179,7 +179,7 @@ const rejectSlot = async (data, consumer) => {
     ///! need to save the changes if both pass, for example;
     /// (await pick.save() && await pick.postId.save())
     await post.save();
-    await post.postId.save();
+    // await post.postId.save();
 
     return post;
 } catch (error) {
@@ -225,7 +225,7 @@ const approveSlot = async (data, consumer) => {
         ///! need to save the changes if both pass, for example;
         /// (await pick.save() && await pick.postId.save())
         await post.save();
-        await post.postId.save();
+        // await post.postId.save();
 
         return post;
     } catch (error) {

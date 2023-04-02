@@ -15,7 +15,10 @@ const getReference = async (user) => {
 
 const getTimeline = async () => {
     try {
-        const result = await userPost.find({}).populate("username").sort({"createdAt": "desc"});
+        const result = await userPost
+            .find({})
+            .populate("username")
+            .sort({ createdAt: "desc" });
         return result;
     } catch (error) {
         logger.error(error);
@@ -23,4 +26,19 @@ const getTimeline = async () => {
     }
 };
 
-module.exports = { getReference, getTimeline };
+const getUserTimeline = async (userObj) => {
+    try {
+        const result = await userPost
+            .find({})
+            .where("username")
+            .equals(userObj)
+            .populate("username")
+            .exec();
+        return result;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
+module.exports = { getReference, getTimeline, getUserTimeline };

@@ -201,7 +201,7 @@ const approveSlot = async (data, consumer) => {
             /// post id does not exist
             return -1;
         }
-        if(post.owner.toString != ownerValue) {
+        if(post.owner.toString() != ownerValue) {
             return -3;
         }
 

@@ -1,6 +1,7 @@
 *.txt
 dummyResponse.txt
 temp/
+.clinic/*
 # Logs
 logs
 *.log

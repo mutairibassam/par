@@ -114,9 +114,14 @@ const addPost = async (post, ref) => {
 
 const getAllRequests = async (consumer) => {
     try {
-        const filter = { owner : consumer._id };
-        const requests = await slot.find(filter).populate("owner").populate("postId").populate("attendees.requester");
-        return requests;   
+        const filter = { owner: consumer._id };
+        const requests = await slot
+            .find(filter)
+            .populate("owner")
+            .populate("postId")
+            .populate("attendees.requester");
+
+        return requests;
     } catch (error) {
         logger.error(error);
         return error;
@@ -124,103 +129,129 @@ const getAllRequests = async (consumer) => {
 };
 
 const requestNewSlot = async (data, consumer) => {
-
     try {
-        const filter = {postId:  data.postId};
+        const filter = { postId: data.postId };
+        const post = await slot
+            .findOne({})
+            .where(data.postId)
+            .populate("postId")
+            .exec();
+
+        const isConsumerAttending = post.attendees.some(
+            (obj) => obj.requester.toString() === consumer._id.toString()
+        );
+        if (isConsumerAttending) {
+            return -3;
+        }
 
         const newRequester = {
             $push: {
-                "attendees": {
-                    "requester":consumer._id,
-                    "requestStatus": "3"
-                }
-            }
+                attendees: {
+                    requester: consumer._id,
+                    requestStatus: "3",
+                },
+            },
         };
 
         /// TODO reject if user requesting for himself
-        const result = await slot.updateOne(
-            filter,
-            newRequester
-        );        
+        const result = await slot.updateOne(filter, newRequester);
         return result;
     } catch (error) {
         logger.error("request new slot " + error);
-        if(error["name"] === "CastError") return -1;
-        return error; 
+        if (error["name"] === "CastError") return -1;
+        return error;
     }
-
 };
 
 const rejectSlot = async (data, consumer) => {
-   /// should expect a postId and consumer id
-   try {
+    /// should expect a postId and consumer id
+    try {
+        const ownerValue = consumer._id;
+        const postValue = data.postId;
+        const requesterValue = data.requesterId;
+        const post = await slot
+            .findOne({})
+            .where("postId")
+            .equals(postValue)
+            .populate("postId")
+            .exec();
 
-    const ownerValue = consumer._id;
-    const postValue = data.postId;
-    const requesterValue = data.requesterId;
-    const post = await slot.findOne({}).where("postId").equals(postValue).populate("postId").exec();
-    
-    if (post === null) {
-        /// post id does not exist
-        return -1;
-    }
-    if(post.owner.toString() != ownerValue) {
-        return -3;
-    }
-    
-    /// change requester status to approve
-    post.attendees.map((obj) => {
-        /// iterate over attendees list to update the status of the requester
-        if(obj.requester.toString() === requesterValue) {
-            obj.requestStatus = "2";
+        if (post === null) {
+            /// post id does not exist
+            return -1;
         }
-    });
+        if (post.owner.toString() != ownerValue) {
+            /// You are not authorized to approve.
+            return -3;
+        }
 
-    ///! need to save the changes if both pass, for example;
-    /// (await pick.save() && await pick.postId.save())
-    await post.save();
-    // await post.postId.save();
+        /// change requester status to approve
 
-    return post;
-} catch (error) {
-    logger.error(error);
-    return error;
-}
+        const foundAttendee = post.attendees.find(
+            (obj) => obj.requester.toString() === requesterValue
+        );
+        if (foundAttendee) {
+            if (foundAttendee.requestStatus === "2") {
+                return -4;
+            }
+            foundAttendee.requestStatus = "2";
+        }
+
+        ///! need to save the changes if both pass, for example;
+        /// (await pick.save() && await pick.postId.save())
+        await post.save();
+        // await post.postId.save();
+
+        return post;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
 };
 
 const approveSlot = async (data, consumer) => {
     /// should expect a postId and consumer id
     try {
-
         const ownerValue = consumer._id;
         const postValue = data.postId;
         const requesterValue = data.requesterId;
-        const post = await slot.findOne({}).where("postId").equals(postValue).populate("postId").exec();
-        
+        const post = await slot
+            .findOne({})
+            .where("postId")
+            .equals(postValue)
+            .populate("postId")
+            .exec();
+
         if (post === null) {
             /// post id does not exist
             return -1;
         }
-        if(post.owner.toString() != ownerValue) {
-            return -3;
-        }
-
-        if(post.postId.occupied >= post.postId.slots){
+        if (post.postId.occupied >= post.postId.slots) {
             /// slots has reached its maximum
             return -2;
         }
-        /// increment slots with 1
+        if (post.owner.toString() != ownerValue) {
+            return -3;
+        }
+
+        // /// increment slots with 1
         post.postId.occupied = post.postId.occupied + 1;
-        if(post.postId.occupied >= post.postId.slots){
+        if (post.postId.occupied >= post.postId.slots) {
             /// slots has been reached its maximum
             post.status = "3";
         }
+
         /// change requester status to approve
-        post.attendees.map((obj) => {
-            if(obj.requester.toString() === requesterValue) {
-                obj.requestStatus = "1";
+
+        const foundAttendee = post.attendees.find(
+            (obj) => obj.requester.toString() === requesterValue
+        );
+        if (foundAttendee) {
+            if (foundAttendee.requestStatus === "1") {
+                return -4;
             }
-        });
+            foundAttendee.requestStatus = "1";
+        }
 
         ///! need to save the changes if both pass, for example;
         /// (await pick.save() && await pick.postId.save())
@@ -267,5 +298,5 @@ module.exports = {
     isValidated,
     rejectSlot,
     requestNewSlot,
-    getAllRequests
+    getAllRequests,
 };

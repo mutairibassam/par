@@ -112,6 +112,47 @@ const addPost = async (post, ref) => {
     }
 };
 
+const getReqeustStatus = async (consumer) => {
+    try {
+        const requests = await slot
+            .find({})
+            .populate("owner")
+            .populate("postId")
+            .populate("attendees.requester");
+
+        // const myresult = [];
+        // for (const obj of requests) {
+        //     for (let i = 0; i < obj.attendees.length; i++) {
+        //         const e = obj.attendees[i];
+        //         if (e.requester._id.toString() === consumer._id.toString()) {
+        //             const result = {
+        //             post: obj.postId,
+        //             requestStatus: e.requestStatus,
+        //             };
+        //             myresult.push(result);
+        //         }
+        //     }
+        // }
+        const result = [];
+
+        requests.forEach((obj) => {
+            obj.attendees.forEach(({ requester, requestStatus }) => {
+                if (requester._id.toString() === consumer._id.toString()) {
+                    result.push({
+                        post: obj.postId,
+                        requestStatus,
+                    });
+                }
+            });
+        });
+
+        return result;
+    } catch (error) {
+        logger.error(error);
+        return error;
+    }
+};
+
 const getAllRequests = async (consumer) => {
     try {
         const filter = { owner: consumer._id };
@@ -131,13 +172,14 @@ const getAllRequests = async (consumer) => {
 const requestNewSlot = async (data, consumer) => {
     try {
         const filter = { postId: data.postId };
-        const post = await slot
+        const requester = await slot
             .findOne({})
-            .where(data.postId)
+            .where("postId")
+            .equals(data.postId)
             .populate("postId")
             .exec();
 
-        const isConsumerAttending = post.attendees.some(
+        const isConsumerAttending = requester.attendees.some(
             (obj) => obj.requester.toString() === consumer._id.toString()
         );
         if (isConsumerAttending) {
@@ -180,7 +222,7 @@ const rejectSlot = async (data, consumer) => {
             /// post id does not exist
             return -1;
         }
-        if (post.owner.toString() != ownerValue) {
+        if (post.owner.toString() != ownerValue.toString()) {
             /// You are not authorized to approve.
             return -3;
         }
@@ -299,4 +341,5 @@ module.exports = {
     rejectSlot,
     requestNewSlot,
     getAllRequests,
+    getReqeustStatus,
 };

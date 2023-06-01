@@ -169,6 +169,34 @@ exports.slotAPI = async (req, res) => {
     );
 };
 
+exports.getRequestStatusAPI = async (req, res) => {
+    const username = req.user.username;
+
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+
+    const result = await userDbInstance.getReqeustStatus(consumer);
+    if (result.level === "error" || result.code === 11000 || result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    
+    return res.status(200).send(
+        Response.successful({
+            msg: result._message,
+            code: 200,
+            data: result,
+        })
+    );
+};
+
 exports.getAllRequestsAPI = async (req, res) => {
     const username = req.user.username;
     // get user id who wants to pick a slot

@@ -25,6 +25,11 @@ router.post("/slot", controller_appraisal_modules.slotAPI);
 router.get("/requests", controller_appraisal_modules.getAllRequestsAPI);
 
 /**
+ *      /requestStatus used to fetch user slot requests and it's status
+ */
+router.get("/requestStatus", controller_appraisal_modules.getRequestStatusAPI);
+
+/**
  *      /request used to pick a new slot
  */
 router.post("/request", controller_appraisal_modules.requestNewSlot);

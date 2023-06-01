@@ -169,6 +169,34 @@ exports.slotAPI = async (req, res) => {
     );
 };
 
+exports.getRequestStatusAPI = async (req, res) => {
+    const username = req.user.username;
+
+    const consumer = await userDbInstance.getReference(username);
+    if (consumer.level == "error") {
+        return res
+            .status(400)
+            .send(Response.badRequest({ msg: "Username is not exist." }));
+    }
+
+    const result = await userDbInstance.getReqeustStatus(consumer);
+    if (result.level === "error" || result.code === 11000 || result === null) {
+        return res.status(400).send(
+            Response.badRequest({
+                msg: result.message,
+            })
+        );
+    }
+    
+    return res.status(200).send(
+        Response.successful({
+            msg: result._message,
+            code: 200,
+            data: result,
+        })
+    );
+};
+
 exports.getAllRequestsAPI = async (req, res) => {
     const username = req.user.username;
     // get user id who wants to pick a slot
@@ -253,6 +281,13 @@ exports.requestNewSlot = async (req, res) => {
             })
         );
     }
+    if(result == -3) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "User already picked this slot before.",
+            })
+        ); 
+    }
     return res.status(201).send(
         Response.successful({
             msg: result._message,
@@ -308,6 +343,13 @@ exports.approveSlot = async (req, res) => {
             })
         );
     }
+    if (result === -2) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slots reach its maximum.",
+            })
+        );
+    }
     if(result === -3) {
         return res.status(403).send(
             Response.unauthorized({
@@ -315,12 +357,12 @@ exports.approveSlot = async (req, res) => {
             })
         );
     }
-    if (result === -2) {
+    if(result === -4) {
         return res.status(403).send(
             Response.unauthorized({
-                msg: "Slots reach its maximum.",
+                msg: "Slot has been already approved.",
             })
-        );
+        );  
     }
     return res.status(200).send(
         Response.successful({
@@ -383,6 +425,13 @@ exports.rejectSlot = async (req, res) => {
                 msg: "You are not authorized to reject.",
             })
         );
+    }
+    if(result === -4) {
+        return res.status(403).send(
+            Response.unauthorized({
+                msg: "Slot has been already rejected.",
+            })
+        );  
     }
     return res.status(200).send(
         Response.successful({

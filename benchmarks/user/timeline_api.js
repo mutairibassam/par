@@ -21,7 +21,6 @@ function startBench() {
             maxConnectionRequests,
             headers: {
                 "content-type": "application/json",
-                "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im11dGFpcmliYXNzYW0yIiwiaWF0IjoxNjgwOTU1MTQxLCJleHAiOjE2ODE1NTk5NDF9.71qlBGXFdgx38Luhf0PNilmd-GZIwH05sTEZgrwpNW8"
             },
             requests: [
                 {

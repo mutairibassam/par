@@ -3,6 +3,7 @@ const userPost = require("../model/user/post").userPost;
 const slot = require("../model/user/post").slot;
 const userAuth = require("../model/auth/user");
 const logger = require("../../logger").logger;
+const { requestStatus } = require("./../common/enum");
 
 const addProfile = async (user) => {
     // add user to databas
@@ -190,7 +191,7 @@ const requestNewSlot = async (data, consumer) => {
             $push: {
                 attendees: {
                     requester: consumer._id,
-                    requestStatus: "3",
+                    requestStatus: requestStatus.pending,
                 },
             },
         };
@@ -233,10 +234,10 @@ const rejectSlot = async (data, consumer) => {
             (obj) => obj.requester.toString() === requesterValue
         );
         if (foundAttendee) {
-            if (foundAttendee.requestStatus === "2") {
+            if (foundAttendee.requestStatus === requestStatus.rejected) {
                 return -4;
             }
-            foundAttendee.requestStatus = "2";
+            foundAttendee.requestStatus = requestStatus.rejected;
         }
 
         ///! need to save the changes if both pass, for example;
@@ -284,15 +285,14 @@ const approveSlot = async (data, consumer) => {
         }
 
         /// change requester status to approve
-
         const foundAttendee = post.attendees.find(
             (obj) => obj.requester.toString() === requesterValue
         );
         if (foundAttendee) {
-            if (foundAttendee.requestStatus === "1") {
+            if (foundAttendee.requestStatus === requestStatus.approved) {
                 return -4;
             }
-            foundAttendee.requestStatus = "1";
+            foundAttendee.requestStatus = requestStatus.approved;
         }
 
         ///! need to save the changes if both pass, for example;

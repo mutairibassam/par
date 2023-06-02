@@ -1,8 +1,8 @@
 const requestStatus = {
-    pending: 'pending',
-    approved: 'approved',
-    rejected: 'rejected'
-}
+    pending: "pending",
+    approved: "approved",
+    rejected: "rejected"
+};
 
 /// TODO to implement postStatus
-module.exports = { requestStatus }
+module.exports = { requestStatus };

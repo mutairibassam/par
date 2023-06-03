@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-//var validateEmail = function (email) {
-//    /* eslint-disable-next-line */
-//    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-//    return re.test(email);
-//};
+var validateEmail = function (email) {
+   /* eslint-disable-next-line */
+   var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+   return re.test(email);
+};
 
 const externalSchema = new Schema({
     linkedin: String,
@@ -30,7 +30,7 @@ const userProfileSchema = new Schema({
     username: {
         type: String,
         required: "Username is required.",
-        //unique: true,
+        unique: true,
         trim: true,
     },
     // required
@@ -44,16 +44,16 @@ const userProfileSchema = new Schema({
         type: String,
         required: "Email address is required.",
         lowercase: true,
-        //unique: true,
-        //validate: [validateEmail, "Email address is not valid"],
+        unique: true,
+        validate: [validateEmail, "Email address is not valid"],
         trim: true,
     },
     // optional
     mobile: {
         type: String,
-        //minlength: 10,
-        //maxlength: 10,
-        //match: [new RegExp("^[0-9]+$"), "Mobile should contain only numbers."],
+        minlength: 10,
+        maxlength: 10,
+        match: [new RegExp("^[0-9]+$"), "Mobile should contain only numbers."],
         trim: true,
     },
     external: {

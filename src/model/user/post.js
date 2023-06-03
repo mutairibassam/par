@@ -54,7 +54,7 @@ const postSchema = new Schema({
     // optional
     note: {
         type: String,
-        maxlength: [50, "Bio should be less than 50 characters"],
+        maxlength: [100, "Bio should be less than 100 characters"],
         trim: true,
     },
     // required

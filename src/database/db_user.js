@@ -121,6 +121,7 @@ const getReqeustStatus = async (consumer) => {
             .populate("postId")
             .populate("attendees.requester");
 
+
         // const myresult = [];
         // for (const obj of requests) {
         //     for (let i = 0; i < obj.attendees.length; i++) {
@@ -141,6 +142,7 @@ const getReqeustStatus = async (consumer) => {
                 if (requester._id.toString() === consumer._id.toString()) {
                     result.push({
                         post: obj.postId,
+                        username: requester,
                         requestStatus,
                     });
                 }

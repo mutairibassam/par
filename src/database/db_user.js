@@ -286,8 +286,8 @@ const approveSlot = async (data, consumer) => {
         /// the below two operations should be done within a session
         /// to implement atomicity
         await post.save();
-        const post_filter = {'postId': postValue}
-        await userPost.findOneAndUpdate(post_filter, { $inc: {'occupied': 1}})
+        const post_filter = {"postId": postValue};
+        await userPost.findOneAndUpdate(post_filter, { $inc: {"occupied": 1}});
 
         return post;
     } catch (error) {

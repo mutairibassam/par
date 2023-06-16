@@ -121,20 +121,6 @@ const getReqeustStatus = async (consumer) => {
             .populate("postId")
             .populate("attendees.requester");
 
-
-        // const myresult = [];
-        // for (const obj of requests) {
-        //     for (let i = 0; i < obj.attendees.length; i++) {
-        //         const e = obj.attendees[i];
-        //         if (e.requester._id.toString() === consumer._id.toString()) {
-        //             const result = {
-        //             post: obj.postId,
-        //             requestStatus: e.requestStatus,
-        //             };
-        //             myresult.push(result);
-        //         }
-        //     }
-        // }
         const result = [];
 
         requests.forEach((obj) => {
@@ -188,7 +174,9 @@ const requestNewSlot = async (data, consumer) => {
         if (isConsumerAttending) {
             return -3;
         }
-
+        /// add condition to check if it's already picked
+        /// remove requester from attendees object
+        /// TODO
         const newRequester = {
             $push: {
                 attendees: {
@@ -242,10 +230,7 @@ const rejectSlot = async (data, consumer) => {
             foundAttendee.requestStatus = requestStatus.rejected;
         }
 
-        ///! need to save the changes if both pass, for example;
-        /// (await pick.save() && await pick.postId.save())
         await post.save();
-        // await post.postId.save();
 
         return post;
     } catch (error) {
@@ -298,9 +283,11 @@ const approveSlot = async (data, consumer) => {
         }
 
         ///! need to save the changes if both pass, for example;
-        /// (await pick.save() && await pick.postId.save())
+        /// the below two operations should be done within a session
+        /// to implement atomicity
         await post.save();
-        // await post.postId.save();
+        const post_filter = {'postId': postValue}
+        await userPost.findOneAndUpdate(post_filter, { $inc: {'occupied': 1}})
 
         return post;
     } catch (error) {

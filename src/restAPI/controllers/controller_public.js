@@ -30,6 +30,7 @@ function generatePassword() {
 async function sendEmail(password, userEmail) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
+    /* eslint-disable-next-line */
     nodemailer.createTestAccount((err, account) => {
         if (err) {
             logger.error(err);
@@ -38,7 +39,7 @@ async function sendEmail(password, userEmail) {
         }
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
-            service: 'gmail',
+            service: "gmail",
             auth: {
                 user: process.parsed.GMAIL_NODEMAILER_EMAIL,
                 pass: process.parsed.GMAIL_NODEMAILER_PASS

@@ -290,7 +290,7 @@ const approveSlot = async (data, consumer) => {
         return post;
     } catch (error) {
         logger.error(error);
-        await session.abortTransaction()
+        await session.abortTransaction();
         return error;
     } finally {
         await session.endSession();

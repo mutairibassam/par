@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const userProfile = require("../model/user/profile");
 const userPost = require("../model/user/post").userPost;
 const slot = require("../model/user/post").slot;
@@ -218,8 +219,6 @@ const rejectSlot = async (data, consumer) => {
             return -3;
         }
 
-        /// change requester status to approve
-
         const foundAttendee = post.attendees.find(
             (obj) => obj.requester.toString() === requesterValue
         );
@@ -231,7 +230,6 @@ const rejectSlot = async (data, consumer) => {
         }
 
         await post.save();
-
         return post;
     } catch (error) {
         logger.error(error);
@@ -241,7 +239,10 @@ const rejectSlot = async (data, consumer) => {
 
 const approveSlot = async (data, consumer) => {
     /// should expect a postId and consumer id
+    let session = await mongoose.startSession();
+    
     try {
+        session.startTransaction();
         const ownerValue = consumer._id;
         const postValue = data.postId;
         const requesterValue = data.requesterId;
@@ -250,6 +251,7 @@ const approveSlot = async (data, consumer) => {
             .where("postId")
             .equals(postValue)
             .populate("postId")
+            .session(session)
             .exec();
 
         if (post === null) {
@@ -264,7 +266,7 @@ const approveSlot = async (data, consumer) => {
             return -3;
         }
 
-        // /// increment slots with 1
+        /// increment slot with 1
         post.postId.occupied = post.postId.occupied + 1;
         if (post.postId.occupied >= post.postId.slots) {
             /// slots has been reached its maximum
@@ -282,17 +284,16 @@ const approveSlot = async (data, consumer) => {
             foundAttendee.requestStatus = requestStatus.approved;
         }
 
-        ///! need to save the changes if both pass, for example;
-        /// the below two operations should be done within a session
-        /// to implement atomicity
         await post.save();
-        const post_filter = {"postId": postValue};
-        await userPost.findOneAndUpdate(post_filter, { $inc: {"occupied": 1}});
-
+        const post_filter = {"_id": postValue};
+        await userPost.findOneAndUpdate(post_filter, { $inc: {"occupied": 1}}).session(session);
         return post;
     } catch (error) {
         logger.error(error);
+        await session.abortTransaction()
         return error;
+    } finally {
+        await session.endSession();
     }
 };
 

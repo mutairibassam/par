@@ -4,7 +4,7 @@
   "debug": "true",
   "timezone": "UTC+0",
   "ssl": false,
-  "mongo_conn_str": "mongodb://localhost:27017/par",
+  "mongo_conn_str": "mongodb+srv://admin:admin@cluster0.6t51pf0.mongodb.net/pardb-stage",
   "base_url": "http://localhost",
-  "env": "development"
+  "env": "stage"
 }

@@ -1,10 +1,10 @@
 {
   "connectionLimit": "20",
-  "port": "3016",
-  "debug": "true",
+  "port": "3015",
+  "debug": "false",
   "timezone": "UTC+0",
   "ssl": false,
   "mongo_conn_str": "mongodb+srv://user:password@cluster0.6t51pf0.mongodb.net/pardb-stage",
-  "base_url": "http://localhost",
+  "base_url": "http://143.244.145.16",
   "env": "stage"
 }

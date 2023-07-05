@@ -141,7 +141,6 @@ exports.createAPI = async (req, res) => {
     }
     // send password to users
     const passwd = generatePassword();
-    console.log(passwd);
     const user = await userDbInstance.addUser(result, passwd);
     if (user.code === 11000) {
         return res.status(401).send(

@@ -1,8 +1,10 @@
 {
-  "connectionLimit": "",
-  "port": "",
+  "connectionLimit": "20",
+  "port": "3015",
   "debug": "false",
   "timezone": "UTC+0",
-  "ssl": true,
-  "mongo_conn_str": ""
+  "ssl": false,
+  "mongo_conn_str": "mongodb+srv://user:password@cluster0.6t51pf0.mongodb.net/pardb-prd",
+  "base_url": "http://143.244.145.16",
+  "env": "production"
 }

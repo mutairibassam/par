@@ -18,7 +18,8 @@ const getTimeline = async () => {
         const result = await userPost
             .find({})
             .populate("username")
-            .sort({ createdAt: "desc" });
+            .sort({ createdAt: "desc" })
+            .limit(100);
         return result;
     } catch (error) {
         logger.error(error);

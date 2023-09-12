@@ -64,8 +64,14 @@ exports.tokenAPI = async (req, res) => {
             const result = await authDbInstance.updateTokens(
                 username,
                 accessToken,
-                newRefreshToken
+                newRefreshToken,
+                false
             );
+            if(result === false) {
+                return res.status(401).send(
+                    Response.forbidden({})
+                );
+            }
             return res.status(200).send(
                 Response.successful({
                     data: result,
@@ -73,4 +79,5 @@ exports.tokenAPI = async (req, res) => {
             );
         }
     );
+    return res.sendStatus(401);
 };

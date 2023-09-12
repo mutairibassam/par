@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const process = require("dotenv").config();
 var nodemailer = require("nodemailer");
+const env = require("../../../config/default.json").env;
 
 function generateAccessToken(user) {
     return jwt.sign(user, process.parsed.ACCESS_TOKEN_SECRET, {
@@ -42,7 +43,7 @@ async function sendEmail(password, userEmail) {
             service: "gmail",
             auth: {
                 user: process.parsed.GMAIL_NODEMAILER_EMAIL,
-                pass: process.parsed.GMAIL_NODEMAILER_PASS
+                pass: process.parsed.GMAIL_NODEMAILER_PASS,
             },
             // host: account.smtp.host,
             // port: account.smtp.port,
@@ -107,7 +108,7 @@ exports.testAPI = async (req, res) => {
 
 /**
  * @async
- * @route   POST /api/v1/user/create
+ * @route   POST /api/v1/public/create
  * @returns {User}
  * @author  Bassam
  * @access  public
@@ -123,33 +124,18 @@ exports.createAPI = async (req, res) => {
             })
         );
     }
-    // generate password
     const result = await userDbInstance.addProfile(data);
-    if (result.code === 11000) {
+    if (result.code === 11000 || result.level === "error") {
         return res.status(401).send(
             Response.unauthorized({
                 msg: result.message,
             })
         );
     }
-    if (result.level === "error") {
-        return res.status(401).send(
-            Response.unauthorized({
-                msg: result.message,
-            })
-        );
-    }
-    // send password to users
+    // generate password
     const passwd = generatePassword();
     const user = await userDbInstance.addUser(result, passwd);
-    if (user.code === 11000) {
-        return res.status(401).send(
-            Response.unauthorized({
-                msg: user.message,
-            })
-        );
-    }
-    if (user.level === "error") {
+    if (user.code === 11000 || user.level === "error") {
         return res.status(401).send(
             Response.unauthorized({
                 msg: user.message,
@@ -164,21 +150,19 @@ exports.createAPI = async (req, res) => {
         accessToken,
         refreshToken
     );
-    if (tokens.code === 11000) {
+    if (tokens.code === 11000 || tokens.level === "error") {
         return res.status(401).send(
             Response.unauthorized({
                 msg: tokens.message,
             })
         );
     }
-    if (tokens.level === "error") {
-        return res.status(401).send(
-            Response.unauthorized({
-                msg: tokens.message,
-            })
-        );
+    // send password to users
+    if (env === "production") {
+        sendEmail(passwd, data.email);
+    } else {
+        console.log(passwd);
     }
-    sendEmail(passwd, data.email);
     return res.status(201).send(
         Response.successful({
             msg: result._message,
@@ -229,7 +213,8 @@ exports.loginAPI = async (req, res) => {
     const result = await authDbInstance.updateTokens(
         consumer._id,
         accessToken,
-        refreshToken
+        refreshToken,
+        true
     );
     if (result.level == "error") {
         return res
@@ -256,5 +241,48 @@ exports.loginAPI = async (req, res) => {
                 user: result,
             },
         })
+    );
+};
+
+/**
+ * @async
+ * @route   POST /api/v1/public/refresh
+ * @returns {Token} refresh API
+ * @author  Bassam
+ * @access  public
+ * @version 1.0
+ */
+
+exports.refreshAPI = async (req, res) => {
+    const username = req.body.data.username;
+    const refreshToken = req.body.data.refreshToken;
+
+    if (refreshToken == null) return res.sendStatus(401);
+    //if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+    jwt.verify(
+        refreshToken,
+        process.parsed.REFRESH_TOKEN_SECRET,
+        async (err, user) => {
+            if (err) return res.sendStatus(403);
+            const accessToken = generateAccessToken({ name: user.username });
+            const newRefreshToken = jwt.sign(
+                user,
+                process.parsed.REFRESH_TOKEN_SECRET
+            );
+            const result = await authDbInstance.updateTokens(
+                username,
+                accessToken,
+                newRefreshToken,
+                false
+            );
+            if (result === false) {
+                return res.status(401).send(Response.forbidden({}));
+            }
+            return res.status(200).send(
+                Response.successful({
+                    data: result,
+                })
+            );
+        }
     );
 };

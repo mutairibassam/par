@@ -1,10 +1,11 @@
 const userProfile = require("../model/user/profile");
 const auth = require("../model/user/auth");
+require("../../logger").intialize();
 const logger = require("../../logger").logger;
 
 const addTokens = async (user, _accessToken, _refreshToken) => {
     try {
-        const filter = { username: user.username };
+        const filter = { username: user.username.toLowerCase() };
         const profile = await userProfile.findOne(filter);
 
         const data = {
@@ -31,9 +32,14 @@ const removeTokens = async (token) => {
     }
 };
 
-const updateTokens = async (id, _accessToken, newRefreshToken) => {
+const updateTokens = async (username, _accessToken, newRefreshToken, isLogin) => {
     try {
-        const filter = { _id : id };
+        let filter = {};
+        if(isLogin === true) {
+            filter = {_id: username};
+        } else {
+            filter = { username : username.toLowerCase() };
+        }
         const profile = await userProfile.findOne(filter);
         const updateFilter = { userId: profile._id };
 
@@ -41,12 +47,13 @@ const updateTokens = async (id, _accessToken, newRefreshToken) => {
         if(result !== null) {
             result.accessToken = _accessToken;
             result.refreshToken = newRefreshToken;
-            result.save();
+            await result.save();
         } else {
             return false;
         }
         return result;
     } catch (error) {
+        console.log(error);
         logger.error(error);
         return error;
     }
@@ -73,7 +80,7 @@ const getTokenByUsername = async (_username) => {
         }
         return false;
     } catch (error) {
-        // logger.error(error);
+        logger.error(error);
         return error;
     }
 };

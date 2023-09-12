@@ -1,5 +1,4 @@
 const autocannon = require("autocannon");
-//const process = require("dotenv").config();
 const config = require("../../config/default.json");
 const mockData = require("./create_mock.json");
 
@@ -10,7 +9,7 @@ function startBench() {
     //const numConnections = args[0] || 100;
     //const maxConnectionRequests = args[1] || 100;
     const numConnections = 1000;
-    const maxConnectionRequests = 1;
+    const maxConnectionRequests = 10;
 
     let requestNumber = 0;
 

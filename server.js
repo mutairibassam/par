@@ -84,7 +84,8 @@ async function authenticateToken(req, res, next) {
     jwt.verify(token, env.parsed.ACCESS_TOKEN_SECRET, async (err, user) => {
         if (err) return res.status(403).send(Response.forbidden({}));
         /// check in database and compare the tokens
-        const dbToken = await getTokenByUsername(user.username);
+        const usr = user.username ?? user.name;
+        const dbToken = await getTokenByUsername(usr);
         /// if it's match next()
         if(token === dbToken) {
             /// if it's not match deny

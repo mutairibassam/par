@@ -12,15 +12,15 @@ const addProfile = async (user) => {
         const result = await userProfile.create({
             first_name: user.first_name,
             last_name: user.last_name,
-            username: user.username,
+            username: user.username.toLowerCase().trim(),
             bio: user.bio,
-            email: user.email,
+            email: user.email.toLowerCase().trim(),
             mobile: user.mobile,
             external: {
-                linkedin: user.external["linkedin"],
-                github: user.external["github"],
-                twitter: user.external["twitter"],
-                portfolio: user.external["portfolio"],
+                linkedin: user.external["linkedin"].trim(),
+                github: user.external["github"].trim(),
+                twitter: user.external["twitter"].trim(),
+                portfolio: user.external["portfolio"].trim(),
             },
         });
         return result;
@@ -287,6 +287,7 @@ const approveSlot = async (data, consumer) => {
         await post.save();
         const post_filter = {"_id": postValue};
         await userPost.findOneAndUpdate(post_filter, { $inc: {"occupied": 1}}).session(session);
+        // await userPost.findOneAndUpdate(post_filter, { $inc: {"occupied": 1}});
         return post;
     } catch (error) {
         logger.error(error);

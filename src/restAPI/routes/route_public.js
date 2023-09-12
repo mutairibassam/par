@@ -19,4 +19,8 @@ router.put("/create", controller_appraisal_modules.createAPI);
  */
 router.post("/login", controller_appraisal_modules.loginAPI);
 
+/**
+ *      /refresh used to refresh [access token]
+ */
+router.post("/refresh", controller_appraisal_modules.refreshAPI);
 module.exports = router;

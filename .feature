@@ -7,13 +7,13 @@ Features:
 - post a new par request (done)
 - pick a slot (done)
 - login (done)
-- logout (pending)
+- logout (done)
 - refresh token (pending)
 - accept par request (later)
-- update post status
-- locations
-- city restriction
-- timeline filters
+- update post status (pending)
+- locations (done)
+- city restriction (pending)
+- timeline filters (pending)
 
 Technical:
 

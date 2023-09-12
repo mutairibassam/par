@@ -30,7 +30,7 @@ const userProfileSchema = new Schema({
     username: {
         type: String,
         required: "Username is required.",
-        unique: true,
+        // unique: true,
         trim: true,
     },
     // required
@@ -44,7 +44,7 @@ const userProfileSchema = new Schema({
         type: String,
         required: "Email address is required.",
         lowercase: true,
-        unique: true,
+        // unique: true,
         validate: [validateEmail, "Email address is not valid"],
         trim: true,
     },
@@ -53,6 +53,7 @@ const userProfileSchema = new Schema({
         type: String,
         minlength: 10,
         maxlength: 10,
+        // unique: true,
         match: [new RegExp("^[0-9]+$"), "Mobile should contain only numbers."],
         trim: true,
     },

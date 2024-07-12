@@ -1,0 +1,1111 @@
+{
+	"info": {
+		"_postman_id": "9b48176e-c8cb-4fee-8143-76758a927ef1",
+		"name": "par",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "20449209-9b48176e-c8cb-4fee-8143-76758a927ef1"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bcc4ad81-eab0-4eea-9cce-d60c5e8ab2fa",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    let res = pm.response.json()",
+									"    const username = res['result']['data']['result']['username']",
+									"    const accessToken = res['result']['data']['tokens']['accessToken']",
+									"    const refreshToken = res['result']['data']['tokens']['refreshToken']",
+									"",
+									"    pm.collectionVariables.set('username', username)",
+									"    pm.collectionVariables.set('accessToken', accessToken)",
+									"    pm.collectionVariables.set('refreshToken', refreshToken)",
+									"    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "eea20107-d679-4c4d-9bf6-1267891c29db",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "2d36af9c-30a2-4a69-8e71-6c70deb07468",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"first_name\": \"{{$randomFirstName}}\",\n        \"last_name\": \"{{$randomLastName}}\",\n        \"username\": \"{{$randomFirstName}}\",\n        \"bio\": \"{{$randomWords}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"mobile\": \"0511111111\",\n        \"external\": {\n            \"linkedin\": \"{{$randomUrl}}\",\n            \"github\": \"{{$randomUrl}}\",\n            \"twitter\": \"{{$randomUrl}}\",\n            \"portfolio\": \"{{$randomUrl}}\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/public/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Profile user-2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4533f755-a7ff-4e02-9077-2f6c51a23805",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    let res = pm.response.json()",
+									"    const username = res['result']['data']['result']['username']",
+									"    const accessToken = res['result']['data']['tokens']['accessToken']",
+									"    const refreshToken = res['result']['data']['tokens']['refreshToken']",
+									"    const requesterId = res['result']['data']['result']['_id']",
+									"    pm.collectionVariables.set('username2', username)",
+									"    pm.collectionVariables.set('accessToken2', accessToken)",
+									"    pm.collectionVariables.set('refreshToken2', refreshToken)",
+									"    pm.collectionVariables.set('requesterId', requesterId)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "cb85ea20-7910-435b-afe5-3f6a0a9a1eae",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"first_name\": \"{{$randomFirstName}}\",\n        \"last_name\": \"{{$randomLastName}}\",\n        \"username\": \"{{$randomFirstName}}\",\n        \"bio\": \"{{$randomWords}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"mobile\": \"0511111111\",\n        \"external\": {\n            \"linkedin\": \"{{$randomUrl}}\",\n            \"github\": \"{{$randomUrl}}\",\n            \"twitter\": \"{{$randomUrl}}\",\n            \"portfolio\": \"{{$randomUrl}}\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/public/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5c871868-3d97-4468-9b09-94ef804ddd69",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "a22ffc7d-af01-4ea8-8c82-3447310b936a",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "b6b587ce-b0b0-483c-9efa-57506a4abc7d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"first_name\": \"{{$randomFirstName}}\",\n        \"last_name\": \"{{$randomLastName}}\",\n        \"username\": \"{{$randomFirstName}}\",\n        \"bio\": \"{{$randomWords}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"mobile\": \"0511111111\",\n        \"external\": {\n            \"linkedin\": \"{{$randomUrl}}\",\n            \"github\": \"{{$randomUrl}}\",\n            \"twitter\": \"{{$randomUrl}}\",\n            \"portfolio\": \"{{$randomUrl}}\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "65dbefa8-a829-4435-aaa0-b29609442edb",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "446b832c-b074-459c-84e0-1f04cfcd05fe",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    let res = pm.response.json()",
+									"    const postId = res['result']['data']['_id']",
+									"    pm.collectionVariables.set('postId', postId)",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "9bb1f728-ee14-4934-800f-8b842652ba5b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"location\": \"https://maps.google.com/na\",\n        \"interest\": [\"nodejs\", \"docker\"],\n        \"note\": \"Expert\",\n        \"date\": \"21/09/2023\",\n        \"from\": \"20:00 PM\",\n        \"to\": \"21:00 PM\",\n        \"slots\": 3\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/post",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Post user-2",
+					"id": "080e6a7d-5fe2-4a0d-8d9a-152a25313505",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"location\": \"https://maps.google.com/na\",\n        \"interest\": [\"na\", \"na\"],\n        \"note\": \"Expert\",\n        \"date\": \"20/02/2202\",\n        \"from\": \"20:00 PM\",\n        \"to\": \"21:00 PM\",\n        \"slots\": \"2\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/post",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Timeline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "802b32b4-d13b-48ce-937d-69fdc38c3a84",
+								"exec": [
+									"pm.test(\"Successful request\", function () {    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "96bb7dd9-c1d2-435f-a111-01bb2619c362",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "edd9587c-bf83-4826-9b21-e3cd21a4209b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/post/timeline",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"timeline"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Timeline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5cc41709-520c-4d1f-b0ce-4324eb2c1aa1",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8743eb97-ff89-45f1-8867-26df32da29da",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "ee4a18d4-b673-4342-9056-d5761aaaaad0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/post/usertimeline",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"usertimeline"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f776e62-f61b-4dbd-8f45-cd05f1d516f0",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0b78cbd6-bb53-46de-8b5b-f83bdf3a3552",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization');",
+									"const username = pm.collectionVariables.get('username');",
+									"pm.request.url.variables.idx(0).value = username;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "d3cecdbd-9b25-4e40-8d44-5e5cea884fe9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/profile/:profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile",
+								":profile"
+							],
+							"variable": [
+								{
+									"key": "profile",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6e080067-e926-41b2-b7ae-ab2cbb675efe",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "18a07432-a1d8-4869-a4f9-2f725c2ec2d5",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "e85a712d-19da-41f4-8d43-b7f1bf3c1220",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/profile/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request New Slot",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "cb5cd1cb-972f-4712-af48-01073339420d",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken2');",
+									"const postId = pm.collectionVariables.get('postId');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')",
+									"let body = {'data': {'postId': postId}}",
+									"pm.request.body.update(body)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "570ccd48-1452-4388-a65a-a4ea093de756",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "7b36d438-d453-4a93-8294-5e70e94532c8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"postId\": \"6496c91596fbb443b146444d\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Requests Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d9c755d5-d1f5-4c59-8031-e2d75a58b1ff",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3097defc-9091-425f-aad9-ad8079ba6eca",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "a02b376f-dfda-4bd4-ba1e-78601b25919f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/requestStatus",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"requestStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cc4d0641-4826-42ca-bec2-7cf807548412",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "53604bc7-4354-4f63-a03c-ba3d3d929367",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "4ba66f3f-ff61-4e67-8848-24ca4c329231",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Slot",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "dec3fb1f-222f-4043-843d-18584c96b3be",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')",
+									"const postId = pm.collectionVariables.get('postId');",
+									"const requesterId = pm.collectionVariables.get('requesterId');",
+									"",
+									"let body = {'data': {postId: postId, requesterId: requesterId}}",
+									"var newRequestBodyJSON = JSON.stringify(body);",
+									"pm.globals.set('payload', newRequestBodyJSON)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "8050f54a-80a8-483a-8643-e8e8a037f765",
+								"exec": [
+									"pm.test(\"Successful request\", function () {    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "e05321a7-f1dc-4d27-95ce-02d5ec211ef0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Slot",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a5509925-3cc4-4e01-9ebd-c2aa78a4a868",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')",
+									"const postId = pm.collectionVariables.get('postId');",
+									"const requesterId = pm.collectionVariables.get('requesterId');",
+									"",
+									"let body = {'data': {postId: postId, requesterId: requesterId}}",
+									"var newRequestBodyJSON = JSON.stringify(body);",
+									"pm.globals.set('payload', newRequestBodyJSON)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "bdc1116c-fcc2-4ce1-a503-c30392a09514",
+								"exec": [
+									"pm.test(\"Successful request\", function () {    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "9f754cce-9273-4a43-a7ea-dafa6f5a9b3c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/user/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "677a8dd8-5781-4940-aebf-2cbdd54e5a40"
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7f3177c8-a233-4944-ae7e-ed8d0b587adc",
+								"exec": [
+									"pm.test(\"Successful request\", function () {    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "f93f7583-1350-483a-9ec4-7e99a6337e8b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"username\": \"Jena\",\n        \"password\": \"VmmqQlTLYkuy~g2foqWq\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/public/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d367569-edde-46cd-99f3-dff8eeb974f7",
+								"exec": [
+									"pm.test(\"Successful request\", function () {    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([204]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "05a872ff-0022-4096-97af-61187d8fce82",
+								"exec": [
+									"const auth = pm.collectionVariables.get('accessToken');",
+									"pm.request.headers.add('Bearer ' + auth,'Authorization')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "a6fc1d25-1d2f-49cf-8d0c-ae559f1118a2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Tokens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "63be7a14-0fa9-482c-864b-ec0948d9056f",
+								"exec": [
+									"pm.test(\"Successful request\", function () {",
+									"    let res = pm.response.json()",
+									"    const accessToken = res['result']['data']['accessToken']",
+									"    const refreshToken = res['result']['data']['refreshToken']",
+									"",
+									"    pm.collectionVariables.set('accessToken', accessToken)",
+									"    pm.collectionVariables.set('refreshToken', refreshToken)",
+									"    ",
+									"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "64888050-ef42-4e21-8416-fe54bbda42f4",
+								"exec": [
+									"const refreshToken = pm.collectionVariables.get('refreshToken');",
+									"const username = pm.collectionVariables.get('username');",
+									"",
+									"let body = {'data': {refreshToken: refreshToken, username: username}}",
+									"var newRequestBodyJSON = JSON.stringify(body);",
+									"pm.globals.set('payload', newRequestBodyJSON)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"id": "c2d0bee4-0a95-4517-ad6b-e10649631bd4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{payload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/public/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"public",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "03385073-74f5-47fb-b486-d7c14340ae3c"
+		},
+		{
+			"name": "Test API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4b4b9b9b-07ca-4f2e-ac3c-b0697567facd",
+						"exec": [
+							"pm.test(\"Successful request\", function () {    ",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,200]);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "95a3dd9b-e891-42bd-8e6c-7fc7fe872eee",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/public/test",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"public",
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "baa2c826-b954-4117-9ffc-a031270bb445",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6c6fc4bd-9b89-44a0-9340-2d801dda833a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "7fdb1539-d781-4a92-a9db-5dcea6663dfb",
+			"key": "postId",
+			"value": ""
+		},
+		{
+			"id": "4a503038-cb30-41fd-a217-bf639c938025",
+			"key": "username",
+			"value": ""
+		},
+		{
+			"id": "cc4795f3-3f72-4503-bd19-1ad102c785b8",
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"id": "86fc2920-4024-4f5a-8407-3d94c0505256",
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"id": "a22388dd-5d52-48ac-b9e3-70a4d3db5a7d",
+			"key": "username2",
+			"value": ""
+		},
+		{
+			"id": "ce6b39d9-aa5a-4866-b858-2c1a8952f392",
+			"key": "accessToken2",
+			"value": ""
+		},
+		{
+			"id": "5e6bdd34-a698-4eca-a004-c72bccf68584",
+			"key": "refreshToken2",
+			"value": ""
+		},
+		{
+			"id": "7bdad805-db1c-473f-9ccb-bb20e415fe03",
+			"key": "requesterId",
+			"value": ""
+		}
+	]
+}
